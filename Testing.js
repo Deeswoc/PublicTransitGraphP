@@ -61,45 +61,46 @@ server = http.createServer((req, res)=>{
             break;
         }
         case '/add-route':{
-            town1Exists = false;
-            town2Exists = false;
+            town1Exists = {exists: false}
+            town2Exists = {exists: false};
+            town = req.headers;
             bookmarks = [];
             session1 = driver.session();
-            first = session1.readTransaction(tx => findTown(tx, req.headers['town1']));
-            /*first = session1.readTransaction(tx => tx.run(     
-                'MATCH (a: Town {Name: $town}) ' +
-                'RETURN a',   {town: req.headers['town1'] }   ) );*/
+
+            
+            first = checkTown(town['town1'], town1Exists);
+            /*first = session1.readTransaction(tx => findTown(tx, req.headers['town1']));
             first.then(result => {
                 if(result)
                     town1Exists = true;
                 bookmarks.push(session1.close());
             }).catch(error=>{
                 res.end(error.message);
-            });
+            });*/
             
-            session2 = driver.session();
+            second = checkTown(town['town2'], town2Exists)
+            /*session2 = driver.session();
             second = session2.readTransaction(tx=>findTown(tx, req.headers['town2']));
-            /*second = session2.readTransaction(tx=>tx.run(     
-                'MATCH (a: Town {Name: $town}) ' +
-                'RETURN a',   {town: req.headers['town2'] }   ) );*/
             second.then(result => {
                 if(result)
                     town2Exists = true;
                 bookmarks.push(session2.close());
             }).catch(error => {
                 res.end(error.message);
-            });
+            });*/
             
 
             Promise.all([first, second]).then(() => {
+                town1Exists = town1Exists.exists;
+                town2Exists = town2Exists.exists;
+                
                 if(town1Exists&&town2Exists){
                     session3 = driver.session(neo4j.WRITE, bookmarks);
-                    add = session3.writeTransaction(tx => addRoute(tx, req.headers['town1'], req.headers['town2']))
-                        //.then(session.writeTransaction((result)=>{addRoute(tx, req.headers['town1'], req.headers['town2'])}))
+                    add = session3.writeTransaction(tx => addRoute(tx, req.headers))
                         .then(result=>{
                             console.log(result);
                             thingy = result.records[0].get(0);
-                            res.end(result.records[0].get('a').properties['Name']+ ' is now connected to ' + result.records[0].get('b').properties['Name']);
+                            res.end(result.records[0].get('a').properties.Name+ ' is now connected to ' + result.records[0].get('b').properties['Name']);
                         })
                         .catch(error=>{
                             res.end(error.message)
@@ -139,13 +140,27 @@ function findTown(tx, townName){
     )
 }
 
-function addRoute(tx, townA, townB){
+function addRoute(tx, params){
     return tx.run(
         'MATCH (a:Town {Name: $towna}) ' +
         'MATCH (b:Town {Name: $townb}) ' +
         //'MERGE (a)<-[:toFrom]-(taxi:Taxi)-[:toFrom]->(b)' +
         'MERGE (a)-[:toFrom]->(b) ' +
         'RETURN a, b'
-        , {towna:townA, townb:townB}
+        , {towna:params['town1'], townb:params['town2']}
      )
+}
+
+function checkTown(name, Exists){
+    townExists = false;
+    session = driver.session();
+    promise = session.readTransaction(tx => findTown(tx, name));
+    promise.then(result => {
+        if(result)
+            Exists.exists = true;
+        bookmarks.push(session1.close());
+    }).catch(error=>{
+        res.end(error.message);
+    });
+    return promise;
 }
