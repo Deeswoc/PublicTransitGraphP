@@ -43,7 +43,7 @@ exports.addRoute = function addRoute(tx, params){
         'MATCH (townb:Town {Name: $townb}) \n' +
         
         'MERGE (towna)<-[:toFrom]-(v)-[:toFrom]-(townb) \n'  + 
-        (params['corporate']=null?'SET v:Corporate ':'') +
+        (params['corporate']?'SET v:Corporate ':'') +
         'SET v.Name = towna.Name + \'/\' + townb.Name \n' +
         'SET v.adultFare = $adultFare \n' +
         'SET v:' + params['medium'] + ' \n' +
