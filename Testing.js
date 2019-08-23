@@ -1,6 +1,7 @@
 const uri = 'bolt://localhost:7687';
 const user = 'neo4j'
 const password = '12345678'
+const graph = require('./routes/graphing.js')
 const http = require('http');
 neo4j = require('neo4j-driver').v1;
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
@@ -18,8 +19,8 @@ resultPromise.then(result => {   session.close();  
 })
 */
 
-server = http.createServer((req, res)=>{
-    switch(req.url){
+server = http.createServer((req, res)=>{        
+    switch(req.url.split('?')[0]){
         case '/test':{
             session = driver.session();
             const resultPromise = session.writeTransaction(tx =>   
@@ -33,22 +34,23 @@ server = http.createServer((req, res)=>{
                 const greeting = singleRecord.get(0);
                 console.log(greeting);   // on application exit: 
                 res.end(greeting);
-                //driver.close(); 
             }).catch(error=>{
                 res.end(error.message);     
             })
             
         }
         case '/add-town':{
-            session = driver.session();
+            graph.addTown(res, req.headers['townname']);
+/*            session = driver.session();
             const prom  = session.writeTransaction(tx =>{
-                addTown(tx, req.headers['townname']);
+                graph.addTown(tx, req.headers['townname']);
             });
             
             prom.then(data=>{
-                session.close();
+                
                 
                 res.end(data.records[0].get(0));
+                session.close();
                 driver.close();
                 
             }).catch(data=>{
@@ -57,7 +59,8 @@ server = http.createServer((req, res)=>{
                 res.end(data.message);
                 driver.close();
             }
-            )
+            )*/
+            
             break;
         }
         case '/add-route':{
@@ -68,39 +71,19 @@ server = http.createServer((req, res)=>{
             session1 = driver.session();
 
             
-            first = checkTown(town['town1'], town1Exists);
-            /*first = session1.readTransaction(tx => findTown(tx, req.headers['town1']));
-            first.then(result => {
-                if(result)
-                    town1Exists = true;
-                bookmarks.push(session1.close());
-            }).catch(error=>{
-                res.end(error.message);
-            });*/
-            
-            second = checkTown(town['town2'], town2Exists)
-            /*session2 = driver.session();
-            second = session2.readTransaction(tx=>findTown(tx, req.headers['town2']));
-            second.then(result => {
-                if(result)
-                    town2Exists = true;
-                bookmarks.push(session2.close());
-            }).catch(error => {
-                res.end(error.message);
-            });*/
-            
-
+            first = graph.checkTown(town['town1'], town1Exists);
+            second = graph.checkTown(town['town2'], town2Exists)
             Promise.all([first, second]).then(() => {
                 town1Exists = town1Exists.exists;
                 town2Exists = town2Exists.exists;
                 
                 if(town1Exists&&town2Exists){
                     session3 = driver.session(neo4j.WRITE, bookmarks);
-                    add = session3.writeTransaction(tx => addRoute(tx, req.headers))
+                    add = session3.writeTransaction(tx => graph.addRoute(tx, req.headers))
                         .then(result=>{
                             console.log(result);
                             thingy = result.records[0].get(0);
-                            res.end(result.records[0].get('a').properties.Name+ ' is now connected to ' + result.records[0].get('b').properties['Name']);
+                            res.end(result.records[0].get('towna').properties.Name+ ' is now connected to ' + result.records[0].get('townb').properties['Name']);
                         })
                         .catch(error=>{
                             res.end(error.message)
@@ -125,7 +108,7 @@ server = http.createServer((req, res)=>{
 })
 
 server.listen(80)
-
+/*
 function addTown(tx, townName){
     tx.run(
         'CREATE (a:Town {Name: $name}) ' + 
@@ -144,7 +127,6 @@ function addRoute(tx, params){
     return tx.run(
         'MATCH (a:Town {Name: $towna}) ' +
         'MATCH (b:Town {Name: $townb}) ' +
-        //'MERGE (a)<-[:toFrom]-(taxi:Taxi)-[:toFrom]->(b)' +
         'MERGE (a)-[:toFrom]->(b) ' +
         'RETURN a, b'
         , {towna:params['town1'], townb:params['town2']}
@@ -164,3 +146,4 @@ function checkTown(name, Exists){
     });
     return promise;
 }
+*/
