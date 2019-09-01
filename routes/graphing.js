@@ -9,6 +9,26 @@ function addTownTransaction(tx, townName){
         'RETURN a', {name: townName}
     )
 }
+
+function getRoutesFromTown(tx, town){
+    return tx.run(
+        'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:toFrom]->(town:Town) ' +
+        'return town.Name',
+        {name: town}
+    )
+}
+
+function getPassingRoutes(tx, town){
+    return tx.run(
+        'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:passesThrough]->(town:Town) ' +
+        'return town',
+        {name: town}
+    )
+}
+
+exports.getPassingRoutes = getPassingRoutes;
+exports.getRoutesFromTown = getRoutesFromTown;
+
 exports.addTown =(res, townName)=>{
     session = driver.session();
     const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));

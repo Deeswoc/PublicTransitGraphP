@@ -1,6 +1,7 @@
 'use strict';
 
 const uri = 'bolt://localhost:7687';
+const url = require('url'); 
 const user = 'neo4j'
 const password = '12345678'
 const ejs = require('ejs');
@@ -10,6 +11,26 @@ const neo4j = require('neo4j-driver').v1;
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 const server = http.createServer((req, res)=>{        
     switch(req.url.split('?')[0]){
+        case '/get-routes':{
+            var currentUrl = url.parse(req.url, true);
+            var town = {name: '', runsTo: [], routesPassThrough: []};
+            town.name = currentUrl.query['town'];
+            if(town!==undefined){ 
+                town.name = town.name.charAt(0).toUpperCase() + town.name.slice(1)
+                var session = driver.session();
+                const promise = session.readTransaction(tx=>graph.getRoutesFromTown(tx, town.name));
+                promise.then(result=>{
+                    town.runsTo = result.records[0].get('town.Name');
+                    var out = JSON.stringify(town);
+                    res.writeHead(200, "content-type: application/json");
+                    res.end(out);
+                }).catch(error=>{
+                    res.end(error.message);
+                })
+            }else
+                res.end('Town Was not provided');
+            break;
+        }
         case '/test':{
             session = driver.session();
             const resultPromise = session.writeTransaction(tx =>   
