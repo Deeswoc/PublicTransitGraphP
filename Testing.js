@@ -18,7 +18,6 @@ const server = http.createServer((req, res)=>{
             let town = {name: '', runsTo: [], routesPassThrough: []};
             town.name = currentUrl.query['town'];
             if(town!==undefined){ 
-                town.name = town.name.charAt(0).toUpperCase() + town.name.slice(1)
                 let session = driver.session();
                 const promise = session.readTransaction(tx=>graph.getRoutesFromTown(tx, town.name));
                 promise.then(result=>{
