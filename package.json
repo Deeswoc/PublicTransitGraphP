@@ -1,0 +1,23 @@
+{
+  "name": "graph-server",
+  "version": "1.0.0",
+  "description": "Hosts various information on all public transport in the islan",
+  "main": "Server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Daniel Nelson",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^6.2.0",
+    "should": "^13.2.3",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

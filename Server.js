@@ -13,7 +13,7 @@ const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 const server = http.createServer((req, res)=>{        
     switch(req.url.split('?')[0]){
         case '/get-routes':{
-            params = bodParse.bodyJSON(req);
+            let params = bodParse.bodyJSON(req);
             let currentUrl = url.parse(req.url, true);
             let town = {name: '', runsTo: [], routesPassThrough: []};
             town.name = currentUrl.query['town'];
@@ -33,7 +33,7 @@ const server = http.createServer((req, res)=>{
             break;
         }
         case '/test':{
-            session = driver.session();
+            let session = driver.session();
             const resultPromise = session.writeTransaction(tx =>   
                 tx.run(     
                     'MATCH (a: Town {Name: $town}) ' +
@@ -55,10 +55,7 @@ const server = http.createServer((req, res)=>{
                 let town = JSON.parse(params);
                 graph.addTown(res, town.name);
 
-            })
-
-            //graph.addTown(res, req.headers['townname']);
-
+            });
             break;
         }
         case '/add-route':{
@@ -70,29 +67,25 @@ const server = http.createServer((req, res)=>{
             if(req.headers["content-type"]!=='application/json'){
                 break;
             }
-            return;
-            
-                //params =  bodParse.bodyJSON(req);
-
-                town1Exists = {exists: false}
-                town2Exists = {exists: false};
-                town = req.headers;
-                bookmarks = [];
-                session1 = driver.session();
+                let town1Exists = {exists: false}
+                let town2Exists = {exists: false};
+                let town = req.headers;
+                let bookmarks = [];
+                let session1 = driver.session();
                 
                 
-                first = graph.checkTown(town['town1'], town1Exists);
-                second = graph.checkTown(town['town2'], town2Exists)
+                let first = graph.checkTown(town['town1'], town1Exists);
+                let second = graph.checkTown(town['town2'], town2Exists)
                 Promise.all([first, second]).then(() => {
                     town1Exists = town1Exists.exists;
                     town2Exists = town2Exists.exists;
                     
                     if(town1Exists&&town2Exists){
-                        session3 = driver.session(neo4j.WRITE, bookmarks);
-                        add = session3.writeTransaction(tx => graph.addRoute(tx, req.headers))
+                        let session3 = driver.session(neo4j.WRITE, bookmarks);
+                        let add = session3.writeTransaction(tx => graph.addRoute(tx, req.headers))
                             .then(result=>{
                                 console.log(result);
-                                thingy = result.records[0].get(0);
+
                                 res.end(result.records[0].get('towna').properties.Name+ ' is now connected to ' + result.records[0].get('townb').properties['Name']);
                             })
                             .catch(error=>{
@@ -107,9 +100,7 @@ const server = http.createServer((req, res)=>{
                     }
                 }).catch(error=>{
                     res.end(error.message);
-                })
-            //})
-
+                });
             break;
         }
         default:{
