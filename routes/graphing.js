@@ -1,7 +1,7 @@
-const neo4j = require('neo4j-driver').v1;
+const neo4j = require('neo4j-driver');
 const uri = 'bolt://localhost:7687';
 const user = 'neo4j';
-const password = '12345678';
+const password = 'testt3$t56%';
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 function addTownTransaction(tx, townName){
     return tx.run(
@@ -28,7 +28,7 @@ function getPassingRoutes(tx, town){
 
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
-
+/*
 exports.addTown =(res, townName)=>{
     session = driver.session();
     const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
@@ -44,8 +44,34 @@ exports.addTown =(res, townName)=>{
         driver.close();
     }
     )
-}
+}*/
 
+exports.addTown = (res, townName) => {
+    session = driver.session();
+    failed = false;
+    const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
+    promise.then(data=>{
+        res.status(201).send({
+            success: true,
+            message: 'Town Added Successfully',
+            error: null,
+            data: data
+        });
+        session.close();
+        driver.close();
+        
+    }).catch((err) =>{
+        session.close();
+        driver.close();
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        })
+    }
+    )
+    return promise;
+}
 
 exports.findTown = findTown;
 
