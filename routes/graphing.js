@@ -102,27 +102,32 @@ function findTown(tx, townName){
     )
 }
 
-exports.addRoute = function addRoute(tx, params){
+exports.addRoute = addRoute;
+
+function addRoute(tx, route){
     return tx.run(
 
         'MATCH (towna:Town {Name: $towna}) \n' +
         'MATCH (townb:Town {Name: $townb}) \n' +
         
-        'MERGE (towna)<-[:toFrom]-(v'+ params['medium'] +')-[:toFrom]-(townb) \n'  + 
-        (params['corporate']?'SET v:Corporate ':'') +
+        'MERGE (towna)<-[:toFrom]-(v'+ route.transport +')-[:toFrom]-(townb) \n'  + 
+        (route.corporate?'SET v:Corporate ':'') +
         'SET v.Name = towna.Name + \'/\' + townb.Name \n' +
         'SET v.adultFare = $adultFare \n' +
         
        
         'RETURN towna, townb'
-        , {towna:params['town1'], townb:params['town2'], adultFare:params['adultfare'], corporate:params['corporate']}
+        , {townA:route.townA, townB:route.townB, adultFare:route.adultFare, corporate:route.corporate}
      )
 }
 
-exports.checkTown = function checkTown(name){
-    townExists = false;
+exports.checkTown = function checkTown(name, townExists){
     session = driver.session();
     promise = session.readTransaction(tx => findTown(tx, name));
+    promise.then(data=>{
+        if(data)
+            townExists.exists = true;
+    })
     return promise;
 }
 
