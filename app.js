@@ -6,12 +6,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var app = express();
 var logger = require('morgan');
-var addTownRouter = require('./routes/town');
+var townRouter = require('./routes/town');
 
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use('/town', addTownRouter);
+app.use('/town', townRouter);
 
 module.exports = app;
 app.listen(8080);

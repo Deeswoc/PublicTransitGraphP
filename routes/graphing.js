@@ -10,6 +10,15 @@ function addTownTransaction(tx, townName){
     )
 }
 
+function addTownsTransaction(tx, towns){
+    return tx.run(
+        'UNWIND $townArray as towns ' +
+        'MERGE (a:Town {Name: towns.name}) ' +
+        'SET a.parish = towns.parish ' +
+        'RETURN a', {townArray: towns}
+    )
+}
+
 function getRoutesFromTown(tx, town){
     return tx.run(
         'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:toFrom]->(town:Town) ' +
@@ -26,25 +35,11 @@ function getPassingRoutes(tx, town){
     )
 }
 
+
+
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
-/*
-exports.addTown =(res, townName)=>{
-    session = driver.session();
-    const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
 
-    promise.then(data=>{
-        res.end(data.records[0].get(0).properties.Name + ' was added');
-        session.close();
-        driver.close();
-        
-    }).catch(data=>{
-        session.close();
-        res.end(data.message);
-        driver.close();
-    }
-    )
-}*/
 
 exports.addTown = (res, townName) => {
     session = driver.session();
@@ -60,6 +55,31 @@ exports.addTown = (res, townName) => {
         session.close();
         driver.close();
         
+    }).catch((err) =>{
+        session.close();
+        driver.close();
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        })
+    }
+    )
+    return promise;
+}
+
+exports.addTowns = function(res, towns){
+    session = driver.session();
+    const promise = session.writeTransaction(tx => addTownsTransaction(tx, towns));
+    promise.then(data=>{
+        res.status(201).send({
+            success:true,
+            message: 'Towns added successfully',
+            error:null,
+            data:data
+        });
+        session.close();
+        driver.close;
     }).catch((err) =>{
         session.close();
         driver.close();
@@ -99,16 +119,31 @@ exports.addRoute = function addRoute(tx, params){
      )
 }
 
-exports.checkTown = function checkTown(name, Exists){
+exports.checkTown = function checkTown(name){
     townExists = false;
     session = driver.session();
     promise = session.readTransaction(tx => findTown(tx, name));
-    promise.then(result => {
-        if(result)
-            Exists.exists = true;
-        bookmarks.push(session1.close());
-    }).catch(error=>{
-        res.end(error.message);
-    });
     return promise;
+}
+
+exports.getOutBoundRoutes = function(res, req){
+    session = driver.session();
+    promise = session.readTransaction(tx => findTown(tx, req.query.name));
+    promise.then(data=>{
+        res.status(201).send({
+            success:true,
+            message:'idk',
+            error:null,
+            data:data
+        })
+    }).catch((err) =>{
+        session.close();
+        driver.close();
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        })
+    }
+    )
 }
