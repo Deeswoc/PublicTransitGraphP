@@ -8,9 +8,14 @@ var app = express();
 var logger = require('morgan');
 var townRouter = require('./routes/town');
 var routeRouter = require('./routes/route');
+var indexRouter = require('./routes/index');
+
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'pug');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use('/', indexRouter);
 app.use('/town', townRouter);
 app.use('/route', routeRouter);
 module.exports = app;

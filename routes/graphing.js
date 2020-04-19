@@ -71,25 +71,12 @@ exports.addTown = (res, townName) => {
 exports.addTowns = function(res, towns){
     session = driver.session();
     const promise = session.writeTransaction(tx => addTownsTransaction(tx, towns));
-    promise.then(data=>{
-        res.status(201).send({
-            success:true,
-            message: 'Towns added successfully',
-            error:null,
-            data:data
-        });
-        session.close();
-        driver.close;
-    }).catch((err) =>{
+    promise.catch(err=>{
+        console.log(err.message)
+    }).finally(data=>{
         session.close();
         driver.close();
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        })
-    }
-    )
+    });
     return promise;
 }
 
@@ -102,15 +89,27 @@ function findTown(tx, townName){
     )
 }
 
-exports.addRoute = addRoute;
+exports.addRoute = function (route, bookmarks){
+    let session = driver.session(neo4j.WRITE);      
+    let promise = session.writeTransaction(tx => addRouteTransaction(tx, route));
+    promise.catch(error=>{
+        console.log(error.message);
+    }).finally(data=>{
+        driver.close();
+        session.close();
+    })
+    return promise;
+}
 
-function addRoute(tx, route){
+
+
+function addRouteTransaction(tx, route){
     return tx.run(
 
-        'MATCH (towna:Town {Name: $towna}) \n' +
-        'MATCH (townb:Town {Name: $townb}) \n' +
+        'MATCH (towna:Town {Name: $townA}) \n' +
+        'MATCH (townb:Town {Name: $townB}) \n' +
         
-        'MERGE (towna)<-[:toFrom]-(v'+ route.transport +')-[:toFrom]-(townb) \n'  + 
+        'MERGE (towna)<-[:toFrom]-(v:'+ route.transport +')-[:toFrom]-(townb) \n'  + 
         (route.corporate?'SET v:Corporate ':'') +
         'SET v.Name = towna.Name + \'/\' + townb.Name \n' +
         'SET v.adultFare = $adultFare \n' +
@@ -121,12 +120,37 @@ function addRoute(tx, route){
      )
 }
 
-exports.checkTown = function checkTown(name, townExists){
+function addRoute(tx, route){
+    return tx.run(
+
+        'MATCH (towna:Town {Name: $townA}) \n' +
+        'MATCH (townb:Town {Name: $townB}) \n' +
+        
+        'MERGE (towna)<-[:toFrom]-(v:'+ route.transport +')-[:toFrom]-(townb) \n'  + 
+        (route.corporate?'SET v:Corporate ':'') +
+        'SET v.Name = towna.Name + \'/\' + townb.Name \n' +
+        'SET v.adultFare = $adultFare \n' +
+        
+       
+        'RETURN towna, townb'
+        , {townA:route.townA, townB:route.townB, adultFare:route.adultFare, corporate:route.corporate}
+     )
+}
+
+
+exports.checkTown = function checkTown(name, Exists, bookmarks){
+    townExists = false;
     session = driver.session();
     promise = session.readTransaction(tx => findTown(tx, name));
-    promise.then(data=>{
-        if(data)
-            townExists.exists = true;
+    promise.then(result => {
+        if(result)
+            Exists.exists = true;
+        bookmarks.push(session.close());
+        driver.close();
+    }).catch(error=>{
+        console.log(error.message);
+        session.close();
+        driver.close();
     })
     return promise;
 }
@@ -134,21 +158,6 @@ exports.checkTown = function checkTown(name, townExists){
 exports.getOutBoundRoutes = function(res, req){
     session = driver.session();
     promise = session.readTransaction(tx => findTown(tx, req.query.name));
-    promise.then(data=>{
-        res.status(201).send({
-            success:true,
-            message:'idk',
-            error:null,
-            data:data
-        })
-    }).catch((err) =>{
-        session.close();
-        driver.close();
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        })
-    }
-    )
+
+    return promise;
 }

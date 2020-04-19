@@ -1,20 +1,30 @@
+const neo4j = require('neo4j-driver');
+const uri = 'bolt://localhost:7687';
+const user = 'neo4j';
+const password = 'testt3$t56%';
+const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+
 let path = require("path");
 let graph = require('../routes/graphing')
+
+
 exports.add_new_route = function (req, res, next){
         let town1Exists = {exists: false};
         let town2Exists = {exists: false};
+        let route = req.body.route;
         let bookmarks = [];
         
-        let first = graph.checkTown(req.body.route.townA, town1Exists);
-        let second = graph.checkTown(req.body.route.townB, town2Exists)
+        let first = graph.checkTown(route.townA, town1Exists, bookmarks);
+        let second = graph.checkTown(route.townB, town2Exists, bookmarks);
+
+        //After the promises have been resovled and the existence of the towns has been verified the response is handled
         Promise.all([first, second]).then(() => {
             town1Exists = town1Exists.exists;
             town2Exists = town2Exists.exists;
             
             if(town1Exists&&town2Exists){
-                let session3 = driver.session(neo4j.WRITE, bookmarks);
-                session3.writeTransaction(tx => graph.addRoute(tx, req.body.route))
-                    .then(data=>{
+                    promise = graph.addRoute(route, bookmarks);
+                    promise.then(data=>{
                         res.status(201).send({
                             success:true,
                             message: 'Towns added successfully',
@@ -31,35 +41,33 @@ exports.add_new_route = function (req, res, next){
             }else if(!town1Exists&&!town2Exists){
                 res.status(201).send({
                     success:true,
-                    message: req.body.route.townA + ' and ' + req.body.route.townB + ' were not found in the database',
+                    message: route.townA + ' and ' + route.townB + ' were not found in the database',
                     error:null,
                     data:{
-                        townA:req.body.route.townA,
-                        townB:req.body.route.townA
+                        townA:route.townA,
+                        townB:route.townA
                     }
                 })
-                //res.end(req.headers['town1'] + ' ' + req.headers['town2'] + ' were not found in the database');
             }else if(!town1Exists){
                 res.status(201).send({
                     success:true,
-                    message: req.body.route.townA + ' was not found in the database',
+                    message: route.townA + ' was not found in the database',
                     error:null,
-                    data:{
-                        townA:req.body.route.townA,
-                    }
+                    data:{townA:route.townA}
                 })
-                //res.end(req.headers['town1'] + ' was not found in the database');
             }else if(!town2Exists){
                 res.status(201).send({
                     success:true,
-                    message: req.body.route.townB + ' was not found in the database',
+                    message: route.townB + ' was not found in the database',
                     error:null,
-                    data:{
-                        townB:req.body.route.townA
-                    }                })
-                //res.end(req.headers['town2'] + ' was not found in the database');
+                    data:{townB:route.townA}
+                });
             }
         }).catch(error=>{
-            res.end(error.message);
+            res.status(500).send({
+                success: false,
+                message: error.message,
+                error: error
+            })
         });
 }

@@ -1,15 +1,43 @@
 
 const graph = require('../routes/graphing');
-exports.add_new_route = async(req, res, next) =>{
-    
-}
 
 exports.add_new_towns = async(req, res, next) =>{
-    graph.addTowns(res, req.body.towns);
+    promise = graph.addTowns(res, req.body.towns);
+    promise.then(data=>{
+        res.status(201).send({
+            success:true,
+            message: 'Towns added successfully',
+            error:null,
+            data:data
+        });
+    }).catch((err) =>{
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        })
+    }
+    )
 }
 
 exports.get_out_bound_routes = async(req, res, next) =>{
-    graph.getOutBoundRoutes(res, req)
+    promise = graph.getOutBoundRoutes(res, req);
+    promise.then(data=>{
+        res.status(201).send({
+            success:true,
+            message:'idk',
+            error:null,
+            data:data
+        })
+    }).catch((err) =>{
+        session.close();
+        driver.close();
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        })
+    });
 }
 
 exports.validate = async(req, res, next) =>{
