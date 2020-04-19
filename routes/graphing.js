@@ -39,7 +39,7 @@ function getPassingRoutes(tx, town){
 
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
-
+exports.getTowns = getTowns;
 
 exports.addTown = (res, townName) => {
     session = driver.session();
@@ -53,11 +53,11 @@ exports.addTown = (res, townName) => {
             data: data
         });
         session.close();
-        driver.close();
+        // driver.close();
         
     }).catch((err) =>{
         session.close();
-        driver.close();
+        // driver.close();
         res.status(500).send({
             success: false,
             message: err.message,
@@ -75,7 +75,7 @@ exports.addTowns = function(res, towns){
         console.log(err.message)
     }).finally(data=>{
         session.close();
-        driver.close();
+        // driver.close();
     });
     return promise;
 }
@@ -120,23 +120,24 @@ function addRouteTransaction(tx, route){
      )
 }
 
-function addRoute(tx, route){
+function getTownsTransaction(tx){
     return tx.run(
-
-        'MATCH (towna:Town {Name: $townA}) \n' +
-        'MATCH (townb:Town {Name: $townB}) \n' +
-        
-        'MERGE (towna)<-[:toFrom]-(v:'+ route.transport +')-[:toFrom]-(townb) \n'  + 
-        (route.corporate?'SET v:Corporate ':'') +
-        'SET v.Name = towna.Name + \'/\' + townb.Name \n' +
-        'SET v.adultFare = $adultFare \n' +
-        
-       
-        'RETURN towna, townb'
-        , {townA:route.townA, townB:route.townB, adultFare:route.adultFare, corporate:route.corporate}
-     )
+        'MATCH (town:Town) ' +
+        'RETURN (town)'
+    )
 }
 
+function getTowns(){
+    let session = driver.session();
+    promise = session.readTransaction(tx => getTownsTransaction(tx));
+    promise.then(data=>{
+        session.close;
+    }).catch(err=>{
+        console.log(err.message);
+        session.close;
+    })
+    return promise;
+}
 
 exports.checkTown = function checkTown(name, Exists, bookmarks){
     townExists = false;

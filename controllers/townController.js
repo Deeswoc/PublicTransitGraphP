@@ -36,17 +36,29 @@ exports.get_out_bound_routes = async(req, res, next) =>{
             success: false,
             message: err.message,
             error: err
-        })
+        });
     });
 }
 
-exports.validate = async(req, res, next) =>{
-    graph.checkTown(req.head.name).then((result) => {
-        if(result)
-            re
-    });
+exports.get_towns = async(req, res, next) =>{
+    promise = graph.getTowns();
+    promise.then(data=>{
+        let townArr = [];
+        data.records.forEach(element => {
+            townArr.push({
+                name: element._fields[0].properties.Name,
+                parish: element._fields[0].properties.parish
+            })
+        });
+        res.status(201).json(townArr);
+    }).catch(err=>{
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        });
+    })
 }
-
 exports.add_new_town = async(req, res,next) =>{
     graph.addTown(res, req.body.town);
     
