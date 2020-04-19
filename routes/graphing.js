@@ -95,7 +95,7 @@ exports.addRoute = function (route, bookmarks){
     promise.catch(error=>{
         console.log(error.message);
     }).finally(data=>{
-        driver.close();
+        // driver.close();
         session.close();
     })
     return promise;
@@ -146,11 +146,11 @@ exports.checkTown = function checkTown(name, Exists, bookmarks){
         if(result)
             Exists.exists = true;
         bookmarks.push(session.close());
-        driver.close();
+        // driver.close();
     }).catch(error=>{
         console.log(error.message);
         session.close();
-        driver.close();
+        // driver.close();
     })
     return promise;
 }
