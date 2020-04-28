@@ -32,16 +32,22 @@ function getPassingRoutes(tx, town){
         'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:passesThrough]->(town:Town) ' +
         'return town',
         {name: town}
-    )
-}
-
-
-
+        )
+    }
+    
+    
+    
+exports.addTowns = addTowns;
+exports.findTown = findTown;
+exports.addRoute = addRoute;
+exports.checkTown = checkTown;
+exports.getOutBoundRoutes = getOutBoundRoutes;
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
 exports.getTowns = getTowns;
-
-exports.addTown = (res, townName) => {
+exports.addTown = addTown;
+    
+addTown = (res, townName) => {
     session = driver.session();
     failed = false;
     const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
@@ -68,7 +74,7 @@ exports.addTown = (res, townName) => {
     return promise;
 }
 
-exports.addTowns = function(res, towns){
+function addTowns(res, towns){
     session = driver.session();
     const promise = session.writeTransaction(tx => addTownsTransaction(tx, towns));
     promise.catch(err=>{
@@ -80,16 +86,15 @@ exports.addTowns = function(res, towns){
     return promise;
 }
 
-exports.findTown = findTown;
 
 function findTown(tx, townName){
     return tx.run(
         'MATCH (a: Town {Name: $town}) ' +
         'RETURN a', {town: townName}
-    )
-}
-
-exports.addRoute = function (route, bookmarks){
+        )
+    }
+    
+function addRoute(route, bookmarks){
     let session = driver.session(neo4j.WRITE);      
     let promise = session.writeTransaction(tx => addRouteTransaction(tx, route));
     promise.catch(error=>{
@@ -139,7 +144,7 @@ function getTowns(){
     return promise;
 }
 
-exports.checkTown = function checkTown(name, Exists, bookmarks){
+function checkTown(name, Exists, bookmarks){
     townExists = false;
     session = driver.session();
     promise = session.readTransaction(tx => findTown(tx, name));
@@ -156,7 +161,7 @@ exports.checkTown = function checkTown(name, Exists, bookmarks){
     return promise;
 }
 
-exports.getOutBoundRoutes = function(res, req){
+function getOutBoundRoutes(res, req){
     session = driver.session();
     promise = session.readTransaction(tx => findTown(tx, req.query.name));
 
