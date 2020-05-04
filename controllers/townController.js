@@ -1,5 +1,4 @@
-
-const graph = require('../routes/graphing');
+    const graph = require('../routes/graphing');
 
 exports.add_new_towns = async(req, res, next) =>{
     promise = graph.addTowns(res, req.body.towns);

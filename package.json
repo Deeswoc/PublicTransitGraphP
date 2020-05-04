@@ -1,33 +1,34 @@
 {
   "name": "graph-server",
   "version": "1.0.0",
-  "description": "Hosts various information on all public transport in the islan",
+  "description": "Hosts various information on all public transport in the island",
   "main": "Server.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "mocha",
+    "start": "node app.js"
   },
   "author": "Daniel Nelson",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.2.0",
+    "jest": "^25.4.0",
     "mocha": "^6.2.0",
     "should": "^13.2.3",
     "supertest": "^4.0.2"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "neo4j-driver": "^4.0.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "express": "^4.17.1",
+    "graphql": "^15.0.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "mysql2": "2.1.0",
+    "neo4j-driver": "^4.0.2",
     "nodemon": "2.0.2",
-    "pug": "2.0.0-beta11",
-    "sequelize": "5.21.3",
-    "sequelize-cli": "5.5.1"
+    "pug": "2.0.0-beta11"
   }
 }

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+  table
+    tr
+      th Town
+      th Parish
+    each town in townArr
+      tr
+        td= town.name
+        td= town.parish
+
+  div(id="canvas")
+
+
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/react/16.7.0-alpha.2/umd/react.development.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.7.0-alpha.2/umd/react-dom.production.min.js")
+  //script(src="townsTable.js" type="text/babel")
+  script(src="towns/towns.js")
+

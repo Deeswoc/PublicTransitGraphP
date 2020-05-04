@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use('/', indexRouter);
 app.use('/town', townRouter);
+app.use(express.static('public'));
 app.use('/route', routeRouter);
 module.exports = app;
 app.listen(8080);
