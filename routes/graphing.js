@@ -2,6 +2,7 @@ const neo4j = require('neo4j-driver');
 const uri = 'bolt://localhost:7687';
 const user = 'neo4j';
 const password = 'testt3$t56%';
+// const password = '12345678'; 
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 function addTownTransaction(tx, townName){
     return tx.run(
@@ -47,7 +48,7 @@ exports.getRoutesFromTown = getRoutesFromTown;
 exports.getTowns = getTowns;
 exports.addTown = addTown;
     
-addTown = (res, townName) => {
+function addTown(res, townName) {
     session = driver.session();
     failed = false;
     const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
@@ -74,11 +75,11 @@ addTown = (res, townName) => {
     return promise;
 }
 
-function addTowns(res, towns){
+function addTowns(towns){
     session = driver.session();
     const promise = session.writeTransaction(tx => addTownsTransaction(tx, towns));
     promise.catch(err=>{
-        console.log(err.message)
+        console.log(err.message);
     }).finally(data=>{
         session.close();
         // driver.close();
