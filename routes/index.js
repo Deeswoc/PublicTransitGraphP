@@ -14,7 +14,7 @@ router.get('/t', (req, res)=>{
                 parish: record._fields[0].properties.parish
             })
         })
-        res.render('towns', townArr);
+        res.render('towns', townArr );
     })
 })
 module.exports = router;    
