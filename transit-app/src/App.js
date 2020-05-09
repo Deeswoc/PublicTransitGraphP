@@ -3,10 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import './TownTable'
 import TownTable from './TownTable';
-let DEV_URL = '';
-if (process.env.NODE_ENV === 'development') {
- DEV_URL = 'http://localhost:3000';
-}
+import d from './devURL';
 
 function App() {
   return (

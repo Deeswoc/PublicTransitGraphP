@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-let DEV_URL = '';
-if (process.env.NODE_ENV === 'development') {
-    DEV_URL = 'http://localhost:3000';
-}
+import d from './devURL';
+
+
 class TownTable extends Component{
     constructor(props) {
         super(props);
@@ -13,7 +12,7 @@ class TownTable extends Component{
 
     async componentDidMount() {
         // Call self-hosted API to get users response
-        const res = await fetch(`${DEV_URL}/town/get-towns`);
+        const res = await fetch(`${d}/town/get-towns`);
         console.log(res);
         const town = await res.json();
         debugger
