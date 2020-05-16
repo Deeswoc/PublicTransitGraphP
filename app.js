@@ -9,17 +9,26 @@ var logger = require('morgan');
 var townRouter = require('./routes/town');
 var routeRouter = require('./routes/route');
 var indexRouter = require('./routes/index');
+var appRouter = require('./routes/app');
+var app = express();
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug');
+
+if (process.env.NODE_ENV === 'development') {
+ var cors = require('cors');
+ app.use(cors());
+}
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use('/', indexRouter);
 app.use('/town', townRouter);
-app.use(express.static('public'));
 app.use('/route', routeRouter);
+app.use('/app', appRouter);
+app.use(express.static('public'));
+app.use(express.static('react-app'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,6 +48,3 @@ app.use(function(req, res, next) {
   
 module.exports = app;
   
-
-app.listen(8080);
-
