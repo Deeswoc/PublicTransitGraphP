@@ -1,9 +1,9 @@
     const graph = require('../routes/graphing');
 
 exports.add_new_towns = async(req, res, next) =>{
-    promise = graph.addTowns(res, req.body.towns);
+    promise = graph.addTowns(req.body.towns);
     promise.then(data=>{
-        res.status(201).send({
+            res.status(201).send({
             success:true,
             message: 'Towns added successfully',
             error:null,
