@@ -12,6 +12,11 @@
     "dev": "concurrently \"SET NODE_ENV=development&&  SET PORT=3000 && nodemon --inspect ./bin/www\" \" cd transit-app && SET PORT=3001 && yarn start\"",
     "build": "cd transit-app && yarn build && cd .. && xcopy /e/h/y/q \"transit-app/build\" \"react-app\\\" > nul 2>&1 && del \"react-app\\app.html\" > nul 2>&1 && ren \"react-app\\index.html\" \"app.html\""
   },
+  "nodemonConfig": {
+    "ignore": [
+      "./transit-app/"
+    ]
+  },
   "author": "Daniel Nelson",
   "license": "ISC",
   "devDependencies": {
