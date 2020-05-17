@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import PropT from 'prop-types';
 import d from './devURL'
+
 
 class NewTownForm extends Component{
     constructor(props){
@@ -28,8 +29,10 @@ class NewTownForm extends Component{
                     <input id="Town" type="Text" onChange={this.updateTown}/>
                     <label htmlFor="Parish">Parish: </label>
                     <input id="Parish" type="Text" onChange={this.updateParish}/>
+                    <LocCat></LocCat>
                     <button type="submit">Submit</button>
                 </form>
+                
             </div>
         );
     }
@@ -61,6 +64,29 @@ class NewTownForm extends Component{
         }
     }
 }
+
+function LocCat(props){
+    const [categories, setCategories] = useState([]);
+    useEffect(()=>{
+        async function fetchCategories(){
+            let res = await fetch(`${d}/town/get-categories`,{
+                method: `GET`,
+            });
+            let cat = await res.json();
+            setCategories(cat)
+        }
+        // let cat = fetchCategories();
+        fetchCategories();
+        // setCategories(cat);
+    }, []);
+
+    return(
+        <select defaultValue={categories[0]}>
+            {categories.map(category => (<option value={category}>{category}</option>))}
+        </select>
+    )
+}
+
 NewTownForm.propTypes = {
     town: PropT.string,
     parish: PropT.string
