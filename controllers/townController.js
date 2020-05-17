@@ -1,5 +1,19 @@
     const graph = require('../routes/graphing');
 
+
+exports.get_categories = async(req, res, next) =>{
+    try {
+        let data = await graph.get_town_categories();
+        res.status(201).json(data);
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        });
+    }
+
+}
 exports.add_new_towns = async(req, res, next) =>{
     promise = graph.addTowns(req.body.towns);
     promise.then(data=>{
@@ -37,6 +51,20 @@ exports.get_out_bound_routes = async(req, res, next) =>{
             error: err
         });
     });
+}
+
+exports.get_town = async(req, res, next) =>{
+    try {
+        const data = await graph.getTown(req.body.id);
+        town = data.records[0]._fields[0].properties;
+        res.status(201).json(town);
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: error.message,
+            error
+        });
+    }
 }
 
 exports.get_towns = async(req, res, next) =>{

@@ -11,6 +11,16 @@ function addTownTransaction(tx, townName){
     )
 }
 
+function getTownTransaction(tx, townID){
+    return tx.run(
+        `
+        Match (n)
+        where id(n) = $id
+        return n`,
+        {id: townID}
+    )
+}
+
 function getRoutes(tx, id){
     return tx.run()
 }
@@ -18,7 +28,7 @@ function getRoutes(tx, id){
 function addTownsTransaction(tx, towns){
     return tx.run(
         'UNWIND $townArray as towns ' +
-        'MERGE (a:Town {Name: towns.name}) ' +
+        'MERGE (a:Location {Name: towns.name}) ' +
         'SET a.parish = towns.parish ' +
         'RETURN a', {townArray: towns}
     )
@@ -37,21 +47,48 @@ function getPassingRoutes(tx, town){
         'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:passesThrough]->(town:Town) ' +
         'return town',
         {name: town}
-        )
-    }
+    )
+}
     
-    
+function getTownCategoriesTransaction(tx){
+    return tx.run(
+        `MATCH (category:LocationCategory)
+        return category
+        ORDER BY category.Name
+        `
+    )
+}
+
     
 exports.addTowns = addTowns;
 exports.findTown = findTown;
+exports.getTown = getTowns;
 exports.addRoute = addRoute;
 exports.checkTown = checkTown;
+exports.get_town_categories = getTownCategories;
 exports.getOutBoundRoutes = getOutBoundRoutes;
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
 exports.getTowns = getTowns;
 exports.addTown = addTown;
     
+async function getTownCategories(){
+    session = driver.session();
+    const data = await session.readTransaction(tx => getTownCategoriesTransaction(tx));
+    let categories = [];
+    records = data.records
+    records.forEach((cat)=>{
+        categories.push(cat._fields[0].properties.Name);
+    })
+    return categories;
+}
+
+async function getTown(townID){
+    session = driver.session();
+    const data = await session.readTransaction(tx => getTownTransaction(tx, townID));
+    return data;
+}
+
 function addTown(res, townName) {
     session = driver.session();
     failed = false;
