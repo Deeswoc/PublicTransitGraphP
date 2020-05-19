@@ -15,7 +15,6 @@ class TownTable extends Component{
         const res = await fetch(`${d}/town/get-towns`);
         console.log(res);
         const town = await res.json();
-        debugger
         this.setState({
             town
         });
@@ -25,16 +24,18 @@ class TownTable extends Component{
         return (
             <div className="App">
                 <table>
-                    <tr>
-                        <th>Town</th>
-                        <th>Parish</th>
-                    </tr>
-                    {
-                    this.state.town.map(town => ( <tr>
-                        <td>{town.name}</td>
-                        <td>{town.parish}</td>
-                    </tr>
-                    ))}
+                    <tbody>
+                        <tr>
+                            <th>Town</th>
+                            <th>Parish</th>
+                        </tr>
+                        {
+                        this.state.town.map(town => ( <tr>
+                            <td>{town.name}</td>
+                            <td>{town.parish}</td>
+                        </tr>
+                        ))}
+                    </tbody>
                 </table>
          </div>
         );
