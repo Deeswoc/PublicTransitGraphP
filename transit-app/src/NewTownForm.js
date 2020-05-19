@@ -1,6 +1,7 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useEffect, useContext } from 'react'
 import PropT from 'prop-types';
-import d from './devURL'
+import MultiSelWindow from './Components/MultiSelectWindow'
+import { NewTownFormContext } from './Contexts/NewTownFormContext';
 
 
 class NewTownForm extends Component{
@@ -9,80 +10,54 @@ class NewTownForm extends Component{
         this.state = {
             town: '',
             parish: '',
+            category: ''
         }
-        this.updateTown = this.updateTown.bind(this);
+        
     } 
-
-    updateTown = (e) =>{
-        this.setState({town: e.target.value});
-        console.log(this.state.town);
-    }
-    updateParish = (e) =>{
-        this.setState({parish: e.target.value});
-        console.log(this.state.parish);
-    }
+    form;
     render(){
         return(
-            <div>
-                <form onSubmit={this.submit}>
+        <NewTownFormContext.Consumer>{(context) => {
+            const {
+                category,
+                addCategory,
+                updateTown,
+                updateParish,
+                submit,
+            } = context;
+            return(
+                <form ref={(form)=>this.form = form} onSubmit={submit}>
                     <label htmlFor="Town">Town: </label>
-                    <input id="Town" type="Text" onChange={this.updateTown}/>
+                    <input id="Town" type="Text" onChange={updateTown} required/>
                     <label htmlFor="Parish">Parish: </label>
-                    <input id="Parish" type="Text" onChange={this.updateParish}/>
+                    <input id="Parish" type="Text" onChange={updateParish} required/>
                     <LocCat></LocCat>
-                    <button type="submit">Submit</button>
+                    <MultiSelWindow/>
+                    <button type="button" onClick={(e)=>{addCategory(category); let valid =  this.form.checkValidity();}}>Add Cat</button>
+                    <button type="submit" onClick={submit}>Submit</button>
                 </form>
-                
-            </div>
+            )
+
+        }}</NewTownFormContext.Consumer>
         );
-    }
-
-
-    submit = async e => {
-        e.preventDefault();
-        try{
-            let towns = [];
-            towns.push({name: this.state.town, parish: this.state.parish});
-            let res = await fetch(`${d}/town/add-towns`, {
-                method: 'POST',
-
-                headers: {
-                    'Content-Type':'application/json', 
-                },
-                body: JSON.stringify({towns})
-            });
-            let data = await res.json();
-            alert(`Status ${res.status}`);
-            if(res.status > 200 && res.status < 300){
-                alert("Added Successfully");
-            }else{
-                alert(`${data}`);
-            } 
-        }catch(error){
-            console.log(error);
-            alert(error);
-        }
     }
 }
 
-function LocCat(props){
-    const [categories, setCategories] = useState([]);
-    useEffect(()=>{
-        async function fetchCategories(){
-            let res = await fetch(`${d}/town/get-categories`,{
-                method: `GET`,
-            });
-            let cat = await res.json();
-            setCategories(cat)
-        }
-        // let cat = fetchCategories();
-        fetchCategories();
-        // setCategories(cat);
-    }, []);
 
+
+function LocCat(props){
+    
+    const { catList, setCategory } = useContext(NewTownFormContext);
+    const onChange = (e) => {
+        setCategory(e.target.value);
+    }
+
+    useEffect(()=>{
+        setCategory(catList[0]);
+    },[catList]);
     return(
-        <select defaultValue={categories[0]}>
-            {categories.map(category => (<option value={category}>{category}</option>))}
+        <select defaultValue={catList[0]} onChange={onChange}>
+            {catList.map(category => (<option value={category}>{category}</option>))}
         </select>
     )
 }
