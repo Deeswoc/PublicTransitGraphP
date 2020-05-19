@@ -19,6 +19,7 @@ class NewTownForm extends Component{
         return(
         <NewTownFormContext.Consumer>{(context) => {
             const {
+                addTownToSubmit,
                 category,
                 addCategory,
                 updateTown,
@@ -34,7 +35,9 @@ class NewTownForm extends Component{
                     <LocCat></LocCat>
                     <MultiSelWindow/>
                     <button type="button" onClick={(e)=>{addCategory(category); let valid =  this.form.checkValidity();}}>Add Cat</button>
+                    <button type="button" onClick={addTownToSubmit}>Add Town</button>
                     <button type="submit" onClick={submit}>Submit</button>
+
                 </form>
             )
 
@@ -56,7 +59,7 @@ function LocCat(props){
         setCategory(catList[0]);
     },[catList]);
     return(
-        <select defaultValue={catList[0]} onChange={onChange}>
+        <select defaultValue={catList[0]} style={{minWidth: 110}} onChange={onChange}>
             {catList.map(category => (<option value={category}>{category}</option>))}
         </select>
     )

@@ -13,10 +13,15 @@ class NewTownFormContextProvider extends Component {
     }
 
     resetForm = ()=>{
+        let LocCat = [];
+        this.state.catList.forEach((category) => {LocCat.push(category)});
+        this.state.categories.forEach((category) => {LocCat.push(category)});
+
         this.setState({
             name:'',
             parish:'',
-            categories:[]
+            catList: LocCat,
+            categories: []
         })
     }
 
@@ -39,6 +44,17 @@ class NewTownFormContextProvider extends Component {
             this.setState({catList});
             console.log(this.state.category);
         }
+    }
+
+    addTownToSubmit = () => {
+        let town = {
+            name: this.state.town,
+            parish: this.state.parish,
+            categories: this.state.categories
+        }
+        let townsToSubmit = [...this.state.townsToSubmit, town];
+        this.setState({townsToSubmit});
+        this.resetForm();
     }
 
     removeCategory = (cat) =>{
@@ -102,8 +118,11 @@ class NewTownFormContextProvider extends Component {
         name: '',
         parish: '',
         category: '',
+        townsToSubmit: [],
+        
         categories:[],
         catList:[],
+        addTownToSubmit: this.addTownToSubmit,
         removeCategory: this.removeCategory,
         resetForm: this.resetForm,
         updateTown: this.updateTown,
