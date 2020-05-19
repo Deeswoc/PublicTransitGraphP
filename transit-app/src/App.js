@@ -6,16 +6,13 @@ import './App.css';
 import './TownTable'
 import TownTable from './TownTable';
 import TownForm from './NewTownForm'
-import d from './devURL';
+import NewTownFormContextProvider from './Contexts/NewTownFormContext';
 
 
 const Towns = () => (
   <TownTable/>
 )
 
-const NewTown = () => (
-  <TownForm />
-)
 
 function App() {
   return (  
@@ -28,7 +25,11 @@ function App() {
 
         <main>
           <Route path="/Towns" component = {Towns}/>
-          <Route path="/Add-Town" component = {NewTown}/>
+          <Route path="/Add-Town">
+            <NewTownFormContextProvider>
+              <TownForm/>
+            </NewTownFormContextProvider>
+          </Route>
         </main>
       </div>
     </Router>
