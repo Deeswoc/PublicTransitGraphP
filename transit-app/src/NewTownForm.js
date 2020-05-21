@@ -3,6 +3,7 @@ import PropT from 'prop-types';
 import MultiSelWindow from './Components/MultiSelectWindow'
 import { NewTownFormContext } from './Contexts/NewTownFormContext';
 import { actions } from './Contexts/NewTownFormContextReducers/newTownFormContextReducer';
+import TownTable from './Components/TownTable';
 
 
 class NewTownForm extends Component{
@@ -20,6 +21,7 @@ class NewTownForm extends Component{
         return(
         <NewTownFormContext.Consumer>{(context) => {
             const {
+                townsToSubmit,
                 parish,
                 name,
                 category,
@@ -53,7 +55,7 @@ class NewTownForm extends Component{
                         }
                     }>Add Town</button>
                     <button type="submit" onClick={submit}>Submit</button>
-                    <AddedTownsTable/>
+                    <TownTable townList = {townsToSubmit}/>
 
                 </form>
             )
@@ -82,28 +84,7 @@ function LocCat(props){
     )
 }
 
-function AddedTownsTable(){
-    const { townsToSubmit } = useContext(NewTownFormContext);
 
-    return (
-        <table>
-            <tbody>
-                <tr>
-                    <th>Name</th>
-                    <th>Parish</th>
-                    <th>Categories</th>
-                </tr>
-                {townsToSubmit.map((town) =>(
-                    <tr>
-                        <td>{town.name}</td>
-                        <td>{town.parish}</td>
-                        <td>{town.categories.map((category, index, arr)=>(`${category}${index + 1 !== arr.length ? ', ' : ''}`))}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    )
-}
 
 NewTownForm.propTypes = {
     town: PropT.string,
