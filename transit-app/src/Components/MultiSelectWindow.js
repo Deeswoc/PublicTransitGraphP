@@ -1,8 +1,9 @@
-import React, { Component, useContext } from 'react'
+import React, { useContext } from 'react'
 import { NewTownFormContext } from '../Contexts/NewTownFormContext'
+import { actions } from '../Contexts/NewTownFormContextReducers/newTownFormContextReducer';
 
 function MultiSelWindow(props){
-    const { categories, removeCategory } = useContext(NewTownFormContext)
+    const { categories } = useContext(NewTownFormContext)
     return (
         <div>
             <ul>   
@@ -15,13 +16,12 @@ function MultiSelWindow(props){
 }
 
 function SelectedItem(props){
-    const { removeCategory } = useContext(NewTownFormContext);
+    const { dispatch } = useContext(NewTownFormContext);
 
     return (
         <li onClick={
             (e) => {
-                removeCategory(props.value)
-                debugger
+                dispatch({type: actions.REMOVE_CATEGORY, cat: props.value});
             }
         }>{props.value}</li>    
     )
