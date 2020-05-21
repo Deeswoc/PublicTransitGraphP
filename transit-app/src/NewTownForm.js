@@ -59,7 +59,6 @@ class NewTownForm extends Component{
 
                 </form>
             )
-
         }}</NewTownFormContext.Consumer>
         );
     }

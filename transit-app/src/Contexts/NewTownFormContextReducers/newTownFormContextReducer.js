@@ -1,9 +1,12 @@
+import { v4 as uuid} from 'uuid'
+
 export default function newTownFormContextReducer(state, action){
     switch(action.type){
         case 'ADD_TOWN_SUBMITION': {
             return {
                 ...state,
                 townsToSubmit: [...state.townsToSubmit, {
+                    id: uuid(),
                     name: state.name,
                     parish: state.parish,
                     categories: state.categories
