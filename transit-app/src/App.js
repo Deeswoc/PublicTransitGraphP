@@ -2,15 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
 
 import './App.css';
-import './TownTable'
-import TownTable from './TownTable';
+import Towns from './FetchedTowns';
 import TownForm from './NewTownForm'
 import NewTownFormContextProvider from './Contexts/NewTownFormContext';
 
 
-const Towns = () => (
-  <TownTable/>
-)
 
 
 function App() {
