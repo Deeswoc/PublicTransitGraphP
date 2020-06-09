@@ -27,10 +27,13 @@ function getRoutes(tx, id){
 
 function addTownsTransaction(tx, towns){
     return tx.run(
-        'UNWIND $townArray as towns ' +
-        'MERGE (a:Location {Name: towns.name}) ' +
-        'SET a.parish = towns.parish ' +
-        'RETURN a', {townArray: towns}
+        `
+UNWIND $townArray as towns 
+UNWIND towns.categories as catName
+MATCH (category:LocationCategory {Name: catName}) 
+MERGE (a:area {Name: towns.name}) 
+MERGE (a)-[:category]-(category)
+`, {townArray: towns}
     )
 }
 
@@ -152,7 +155,6 @@ function addRoute(route, bookmarks){
 
 function addRouteTransaction(tx, route){
     return tx.run(
-
         'MATCH (towna:Town {Name: $townA}) \n' +
         'MATCH (townb:Town {Name: $townB}) \n' +
         
