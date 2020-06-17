@@ -1,4 +1,4 @@
-    const graph = require('../routes/graphing');
+const graph = require('../routes/graphing');
 
 
 exports.get_categories = async(req, res, next) =>{
@@ -12,7 +12,6 @@ exports.get_categories = async(req, res, next) =>{
             error: err
         });
     }
-
 }
 exports.add_new_towns = async(req, res, next) =>{
     promise = graph.addTowns(req.body.towns);

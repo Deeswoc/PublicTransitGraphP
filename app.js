@@ -24,7 +24,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use('/', indexRouter);
-app.use('/town', townRouter);
+app.use('/towns', townRouter);
 app.use('/route', routeRouter);
 app.use('/app', appRouter);
 app.use(express.static('public'));

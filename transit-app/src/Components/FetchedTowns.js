@@ -12,7 +12,7 @@ class FetchedTowns extends Component{
     }
 
     async componentDidMount() {
-        const res = await fetch(`${d}/town/get-towns`);
+        const res = await fetch(`${d}/towns`);
         console.log(res);
         const towns = await res.json();
         this.setState({
