@@ -18,7 +18,7 @@ function NewTownFormContextProvider (props){
     const [state, dispatch] = useReducer(newTownFormContextReducer, initialState);
     useEffect(()=>{ 
         let $ = async() => {
-            let data = await fetch(`${d}/town/get-categories`);
+            let data = await fetch(`${d}/towns/categories`);
             let catList = await data.json();
             dispatch({type: act.SET_CATLIST, catList});
         };
