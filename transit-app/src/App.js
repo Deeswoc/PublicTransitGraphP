@@ -5,9 +5,8 @@ import './App.css';
 import Towns from './Components/FetchedTowns';
 import TownForm from './Routes/AddTowns/NewTownForm'
 import NewTownFormContextProvider from './Contexts/NewTownFormContext';
-
-
-
+import RouteForm from './Routes/AddRoute/NewRouteForm'
+import NewRouteFormContextProvider from './Contexts/NewRouteFormContext';
 
 function App() {
   return (  
@@ -16,6 +15,7 @@ function App() {
         <aside>
           <Link to={`/Towns`}>Towns</Link>
           <Link to={`/Add-Town`}>Add Towns</Link>
+          <Link to={`/Add-Route`}>Add Route</Link>
         </aside>
 
         <main>
@@ -24,6 +24,11 @@ function App() {
             <NewTownFormContextProvider>
               <TownForm/>
             </NewTownFormContextProvider>
+          </Route>
+          <Route path="/Add-Route">
+            <NewRouteFormContextProvider>
+              <RouteForm/>
+            </NewRouteFormContextProvider>
           </Route>
         </main>
       </div>
