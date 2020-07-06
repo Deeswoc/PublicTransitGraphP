@@ -2,16 +2,43 @@ export default newRouteFormContextReducer;
 
 function newRouteFormContextReducer(state, action){
     switch(action.type){
+        
         case actions.addMidPoint:{
-            return {...state, midPoints: [...state.midPoints, ""]}
+            return {
+                ...state, 
+                midPoints: [
+                    ...state.midPoints, 
+                    ""
+                ]
+            }
         }   
-        case actions.setEndPointA:{
-            return {...state, endPoints: {...state.endpoints, A: action.endPointA}}
+
+        case actions.setEndPointAName:{
+            return {
+                ...state, 
+                endPoints: {
+                    ...state.endPoints, 
+                    A: {
+                        ...state.endPoints.A, 
+                        name: action.Name
+                    }
+                }
+            }
         }
-        case actions.setEndPointB:{
-            return {...state, endPoints: {...state.endpoints, B: action.endPointB}}
+
+        case actions.setEndPointBName:{
+            return {
+                ...state, endPoints: {
+                    ...state.endPoints, 
+                    B: {
+                        ...state.endPoints.B, 
+                        name: action.Name
+                    }
+                }
+            }
         }
-        case actions.editMidPoint:{
+
+        case actions.setMidPointName:{
             return ({...state, midPoints: [...state.midPoints.map((midPoint, i)=>{
                 if(i===action.index)
                     return action.updatedMidPoint;
@@ -19,12 +46,18 @@ function newRouteFormContextReducer(state, action){
                     return midPoint;
             })]}) 
         }
+
         case actions.removeMidPoint:{
             console.log(action);
 
-            return {...state, midPoints: [...state.midPoints.filter((midPoint, i)=>{
-                return i !== action.index;
-            })]}
+            return {
+                ...state, 
+                midPoints: [
+                    ...state.midPoints.filter((midPoint, i)=>{
+                        return i !== action.index;
+                    })
+                ]
+            }
         }
 
         default: {
@@ -35,8 +68,11 @@ function newRouteFormContextReducer(state, action){
 
 export let actions = {
     addMidPoint: 0,
-    setEndPointA: 1,
-    setEndPointB: 2,
-    editMidPoint: 3,
-    removeMidPoint: 4
+    setEndPointAName: 1,
+    setEndPointAParish: 2,
+    setEndPointBName: 3,
+    setEndPointBParish: 4,
+    setMidPointName: 5,
+    setMidPointParish: 7,
+    removeMidPoint: 8
 }
