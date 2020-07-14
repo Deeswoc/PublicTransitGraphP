@@ -1,22 +1,20 @@
-import React, { useState, useReducer, useContext, useEffect } from 'react'
+import React, { useState, useContext,   } from 'react'
 import '../../Styles/Forms/baseStyle.css'
 import ExpandableList from '../../Components/ExpandableList'
-import NewRouteFormContextProvider, { NewRouteFormContext } from '../../Contexts/NewRouteFormContext'
+import { NewRouteFormContext } from '../../Contexts/NewRouteFormContext'
 import { actions as act } from '../../Contexts/NewRouteFormContextReducers/NewRouteFormContextReducer'
+
 let MiddleTowns = (props) => {
     const { midPoints, dispatch } = useContext(NewRouteFormContext);
     let remove = (index)=>{
         dispatch({type:act.removeMidPoint, index})
     }
-
     let edit = (index, updatedMidPoint)=>{
         dispatch({type:act.setMidPointName, updatedMidPoint, index})
     }
     return (
         <ExpandableList list = {midPoints} columns = {['Name', 'Parish']} remove = {remove} editValue = {edit}/>
     )
-
-    
 }
 
 let NewRouteForm = (props) => {
@@ -24,17 +22,12 @@ let NewRouteForm = (props) => {
     const [townsOnRoute, setTownsOnRoute] = useState([]);
     const { 
         endPoints, 
-        midPoints, 
         dispatch 
-    } = useContext(NewRouteFormContext)
+    } = useContext(NewRouteFormContext);
     const removeTownOnRoute = (index) => {
         setTownsOnRoute(townsOnRoute.filter((item, i)=>{
             return i !== index;
         }))
-    }
-
-    let addMiddleTown = () => {
-        setTownsOnRoute([...townsOnRoute, {text: "placeholder", i: townsOnRoute.length}])
     }
 
     return (
@@ -47,6 +40,8 @@ let NewRouteForm = (props) => {
             <input name="EndpointB" placeholder="e.g. Kingston" value={endPoints.B.name} onChange={(e)=>{
                 dispatch({type: act.setEndPointBName, Name: e.target.value})
             }}></input>
+            <input name="corporate" type="checkbox"></input>
+            <label htmlFor="corporate">Corporate</label>
             <fieldset>
                 <legend>Fair</legend>
                 <label htmlFor="adult">Adult</label>$ <input name="adult" type="number" min="0" step="10"></input>
