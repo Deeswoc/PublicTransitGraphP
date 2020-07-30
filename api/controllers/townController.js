@@ -55,8 +55,8 @@ exports.get_out_bound_routes = async(req, res, next) =>{
 
 exports.get_town = async(req, res, next) =>{
     try {
-        const data = await graph.getTown(req.body.id);
-        town = data.records[0]._fields[0].properties;
+        let id = parseInt(req.params.id);
+        const town = await townModel.getTown(id);
         res.status(201).json(town);
     } catch (error) {
         res.status(500).send({

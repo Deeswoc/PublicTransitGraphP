@@ -41,9 +41,21 @@ function addTowns(towns){
         console.log(err.message);
     }).finally(data=>{
         session.close();
-        // driver.close();
     });
     return promise;
+}
+
+exports.getTown = async function (townID){
+    try {
+        let session = driver.session();
+        let data = await session.readTransaction(tx => ta.getTownTransaction(tx, townID));
+        let town = data.records[0]._fields[0].properties;
+        session.close();
+        return town;
+    } catch (error) {
+        console.log(error.message);
+        session.close();
+    }
 }
 
 exports.getTowns = async function(){

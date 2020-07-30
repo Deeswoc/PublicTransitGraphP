@@ -7,15 +7,15 @@ function addTownTransaction(tx, townName){
     )
 }
 
-function getTownTransaction(tx, townID){
-    return tx.run(
-        `
-        Match (n)
-        where id(n) = $id
-        return n`,
-        {id: townID}
-    )
-}
+// function getTownTransaction(tx, townID){
+//     return tx.run(
+//         `
+//         Match (n)
+//         where id(n) = $id
+//         return n`,
+//         {id: townID}
+//     )
+// }
 
 function getRoutes(tx, id){
     return tx.run()
@@ -61,14 +61,14 @@ function getTownCategoriesTransaction(tx){
     
 exports.addTowns = addTowns;
 exports.findTown = findTown;
-exports.getTown = getTowns;
+// exports.getTown = getTowns;
 exports.addRoute = addRoute;
 exports.checkTown = checkTown;
 exports.get_town_categories = getTownCategories;
 exports.getOutBoundRoutes = getOutBoundRoutes;
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
-exports.getTowns = getTowns;
+// exports.getTowns = getTowns;
 exports.addTown = addTown;
     
 async function getTownCategories(){
@@ -82,11 +82,11 @@ async function getTownCategories(){
     return categories;
 }
 
-async function getTown(townID){
-    session = driver.session();
-    const data = await session.readTransaction(tx => getTownTransaction(tx, townID));
-    return data;
-}
+// async function getTown(townID){
+//     session = driver.session();
+//     const data = await session.readTransaction(tx => getTownTransaction(tx, townID));
+//     return data;
+// }
 
 function addTown(res, townName) {
     session = driver.session();
@@ -165,24 +165,24 @@ function addRouteTransaction(tx, route){
      )
 }
 
-function getTownsTransaction(tx){
-    return tx.run(
-        'MATCH (town:Town) ' +
-        'RETURN (town)'
-    )
-}
+// function getTownsTransaction(tx){
+//     return tx.run(
+//         'MATCH (town:Town) ' +
+//         'RETURN (town)'
+//     )
+// }
 
-function getTowns(){
-    let session = driver.session();
-    promise = session.readTransaction(tx => getTownsTransaction(tx));
-    promise.then(data=>{
-        session.close;
-    }).catch(err=>{
-        console.log(err.message);
-        session.close;
-    })
-    return promise;
-}
+// function getTowns(){
+//     let session = driver.session();
+//     promise = session.readTransaction(tx => getTownsTransaction(tx));
+//     promise.then(data=>{
+//         session.close;
+//     }).catch(err=>{
+//         console.log(err.message);
+//         session.close;
+//     })
+//     return promise;
+// }
 
 function checkTown(name, Exists, bookmarks){
     townExists = false;
