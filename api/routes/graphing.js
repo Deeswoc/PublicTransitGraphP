@@ -1,11 +1,5 @@
 const neo4j = require('neo4j-driver');
 const driver = require('../config/database');
-function addTownTransaction(tx, townName){
-    return tx.run(
-        'MERGE (a:Town {Name: $name}) ' + 
-        'RETURN a', {name: townName}
-    )
-}
 
 // function getTownTransaction(tx, townID){
 //     return tx.run(
@@ -49,14 +43,14 @@ function getPassingRoutes(tx, town){
     )
 }
     
-function getTownCategoriesTransaction(tx){
-    return tx.run(
-        `MATCH (category:LocationCategory)
-        return category
-        ORDER BY category.Name
-        `
-    )
-}
+// function getTownCategoriesTransaction(tx){
+//     return tx.run(
+//         `MATCH (category:LocationCategory)
+//         return category
+//         ORDER BY category.Name
+//         `
+//     )
+// }
 
     
 // exports.addTowns = addTowns;
@@ -64,23 +58,23 @@ exports.findTown = findTown;
 // exports.getTown = getTowns;
 exports.addRoute = addRoute;
 exports.checkTown = checkTown;
-exports.get_town_categories = getTownCategories;
+// exports.get_town_categories = getTownCategories;
 exports.getOutBoundRoutes = getOutBoundRoutes;
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
 // exports.getTowns = getTowns;
 // exports.addTown = addTown;
     
-async function getTownCategories(){
-    session = driver.session();
-    const data = await session.readTransaction(tx => getTownCategoriesTransaction(tx));
-    let categories = [];
-    records = data.records
-    records.forEach((cat)=>{
-        categories.push(cat._fields[0].properties.Name);
-    })
-    return categories;
-}
+// async function getTownCategories(){
+//     session = driver.session();
+//     const data = await session.readTransaction(tx => getTownCategoriesTransaction(tx));
+//     let categories = [];
+//     records = data.records
+//     records.forEach((cat)=>{
+//         categories.push(cat._fields[0].properties.Name);
+//     })
+//     return categories;
+// }
 
 // async function getTown(townID){
 //     session = driver.session();
