@@ -1,6 +1,6 @@
 const 
     graph = require('../routes/graphing'),
-    townModel = require('../models/town');
+    townModel = require('../models/town/town');
 
 exports.get_categories = async(req, res, next) =>{
     try {

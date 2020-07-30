@@ -1,6 +1,6 @@
 const
-    driver = require('../config/database'),
-    ta = require('./transactions/townTransactions');
+    driver = require('../../config/database'),
+    ta = require('../transactions/townTransactions');
 async function getTown(townID){
     session = driver.session();
     const data = await session.readTransaction(tx => ta.getTownTransaction(tx, townID));
