@@ -5,10 +5,9 @@ const bodParse =  require('./body methods.js')
 const url = require('url'); 
 const user = 'neo4j'
 const password = '12345678'
-const ejs = require('ejs');
 const graph = require('./routes/graphing.js')
 const http = require('http');
-const neo4j = require('neo4j-driver').v1;
+const neo4j = require('neo4j-driver');
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 const server = http.createServer((req, res)=>{        
     switch(req.url.split('?')[0]){
@@ -110,4 +109,4 @@ const server = http.createServer((req, res)=>{
     }
 })
 
-server.listen(80)
+server.listen(3002)
