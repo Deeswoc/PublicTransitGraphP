@@ -1,47 +1,6 @@
 const
     driver = require('../../config/database'),
     ta = require('./townTransactions');
-async function getTown(townID){
-    session = driver.session();
-    const data = await session.readTransaction(tx => ta.getTownTransaction(tx, townID));
-    return data;
-}
-
-function addTown(res, townName) {
-    session = driver.session();
-    failed = false;
-    const promise  = session.writeTransaction(tx => ta.addTownTransaction(tx, townName));
-    promise.then(data=>{
-        res.status(201).send({
-            success: true,
-            message: 'Town Added Successfully',
-            error: null,
-            data: data
-        });
-        session.close();
-        
-    }).catch((err) =>{
-        session.close();
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        })
-    }
-    )
-    return promise;
-}
-
-function addTowns(towns){
-    session = driver.session();
-    const promise = session.writeTransaction(tx => ta.addTownsTransaction(tx, towns));
-    promise.catch(err=>{
-        console.log(err.message);
-    }).finally(data=>{
-        session.close();
-    });
-    return promise;
-}
 
 exports.getTown = async function (townID){
     try {
@@ -84,12 +43,6 @@ exports.addTowns = async function (towns){
     }finally{
         session.close();
     }
-    // promise.catch(err=>{
-    //     console.log(err.message);
-    // }).finally(data=>{
-    //     session.close();
-    // });
-    // return promise;
 }
 
 
