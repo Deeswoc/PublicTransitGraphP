@@ -1,8 +1,5 @@
 .vs/
 node_modules/
 .vscode
-<<<<<<< HEAD
 react-app/*
-=======
-react-app/*
->>>>>>> react-app
+config/

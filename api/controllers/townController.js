@@ -1,5 +1,6 @@
-const graph = require('../routes/graphing');
-
+const 
+    graph = require('../routes/graphing'),
+    townModel = require('../models/town');
 
 exports.get_categories = async(req, res, next) =>{
     try {
@@ -67,23 +68,16 @@ exports.get_town = async(req, res, next) =>{
 }
 
 exports.get_towns = async(req, res, next) =>{
-    promise = graph.getTowns();
-    promise.then(data=>{
-        let townArr = [];
-        data.records.forEach(element => {
-            townArr.push({
-                name: element._fields[0].properties.Name,
-                parish: element._fields[0].properties.parish
-            })
-        });
-        res.status(201).json(townArr);
-    }).catch(err=>{
+    try {
+        let towns = await townModel.getTowns();
+        res.status(201).json(towns);  
+    } catch (error) {
         res.status(500).send({
             success: false,
-            message: err.message,
-            error: err
+            message: error.message,
+            error: error
         });
-    })
+    }
 }
 exports.add_new_town = async(req, res,next) =>{
     graph.addTown(res, req.body.town);
