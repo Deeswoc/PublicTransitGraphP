@@ -15,22 +15,20 @@ exports.get_categories = async(req, res, next) =>{
     }
 }
 exports.add_new_towns = async(req, res, next) =>{
-    promise = graph.addTowns(req.body.towns);
-    promise.then(data=>{
-            res.status(201).send({
+    try {
+        await townModel.addTowns(req.body.towns);
+        res.status(201).send({
             success:true,
             message: 'Towns added successfully',
-            error:null,
-            data:data
-        });
-    }).catch((err) =>{
+            error:null
+        })
+    } catch (error) {
         res.status(500).send({
             success: false,
-            message: err.message,
-            error: err
+            message: error.message,
+            error
         })
     }
-    )
 }
 
 exports.get_out_bound_routes = async(req, res, next) =>{

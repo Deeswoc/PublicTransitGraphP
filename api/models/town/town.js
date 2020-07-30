@@ -19,11 +19,9 @@ function addTown(res, townName) {
             data: data
         });
         session.close();
-        // driver.close();
         
     }).catch((err) =>{
         session.close();
-        // driver.close();
         res.status(500).send({
             success: false,
             message: err.message,
@@ -73,4 +71,54 @@ exports.getTowns = async function(){
     } catch (error) {
         console.log(error.message);
     }
+}
+
+exports.addTowns = async function (towns){
+    let session;
+    try {
+        session = driver.session();
+        const data = await session.writeTransaction(tx => ta.addTownsTransaction(tx, towns));
+        console.log(data);
+    } catch (error) {
+        console.log(error.message);
+    }finally{
+        session.close();
+    }
+    // promise.catch(err=>{
+    //     console.log(err.message);
+    // }).finally(data=>{
+    //     session.close();
+    // });
+    // return promise;
+}
+
+
+exports.addTown = async function (res, townName) {
+
+    try {
+        session = driver.session();
+        const data  = await session.writeTransaction(tx => addTownTransaction(tx, townName));
+    } catch (error) {
+        
+    }
+
+    promise.then(data=>{
+        res.status(201).send({
+            success: true,
+            message: 'Town Added Successfully',
+            error: null,
+            data: data
+        });
+        session.close();
+        
+    }).catch((err) =>{
+        session.close();
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            error: err
+        })
+    }
+    )
+    return promise;
 }

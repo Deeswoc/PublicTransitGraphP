@@ -18,12 +18,13 @@ return n`,
 exports.addTownsTransaction = function (tx, towns){
     return tx.run(
         `
-UNWIND $townArray as towns 
-UNWIND towns.categories as catName
+UNWIND $towns as town
+MERGE (a:area {Name: town.name}) with a
+UNWIND a.categories as catName
 MATCH (category:LocationCategory {Name: catName}) 
-MERGE (a:area {Name: towns.name}) 
 MERGE (a)-[:category]-(category)
-`, {townArray: towns}
+RETURN (a)
+`, {towns}
     )
 }
 

@@ -59,7 +59,7 @@ function getTownCategoriesTransaction(tx){
 }
 
     
-exports.addTowns = addTowns;
+// exports.addTowns = addTowns;
 exports.findTown = findTown;
 // exports.getTown = getTowns;
 exports.addRoute = addRoute;
@@ -69,7 +69,7 @@ exports.getOutBoundRoutes = getOutBoundRoutes;
 exports.getPassingRoutes = getPassingRoutes;
 exports.getRoutesFromTown = getRoutesFromTown;
 // exports.getTowns = getTowns;
-exports.addTown = addTown;
+// exports.addTown = addTown;
     
 async function getTownCategories(){
     session = driver.session();
@@ -88,44 +88,44 @@ async function getTownCategories(){
 //     return data;
 // }
 
-function addTown(res, townName) {
-    session = driver.session();
-    failed = false;
-    const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
-    promise.then(data=>{
-        res.status(201).send({
-            success: true,
-            message: 'Town Added Successfully',
-            error: null,
-            data: data
-        });
-        session.close();
-        // driver.close();
+// function addTown(res, townName) {
+//     session = driver.session();
+//     failed = false;
+//     const promise  = session.writeTransaction(tx => addTownTransaction(tx, townName));
+//     promise.then(data=>{
+//         res.status(201).send({
+//             success: true,
+//             message: 'Town Added Successfully',
+//             error: null,
+//             data: data
+//         });
+//         session.close();
+//         // driver.close();
         
-    }).catch((err) =>{
-        session.close();
-        // driver.close();
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        })
-    }
-    )
-    return promise;
-}
+//     }).catch((err) =>{
+//         session.close();
+//         // driver.close();
+//         res.status(500).send({
+//             success: false,
+//             message: err.message,
+//             error: err
+//         })
+//     }
+//     )
+//     return promise;
+// }
 
-function addTowns(towns){
-    session = driver.session();
-    const promise = session.writeTransaction(tx => addTownsTransaction(tx, towns));
-    promise.catch(err=>{
-        console.log(err.message);
-    }).finally(data=>{
-        session.close();
-        // driver.close();
-    });
-    return promise;
-}
+// function addTowns(towns){
+//     session = driver.session();
+//     const promise = session.writeTransaction(tx => addTownsTransaction(tx, towns));
+//     promise.catch(err=>{
+//         console.log(err.message);
+//     }).finally(data=>{
+//         session.close();
+//         // driver.close();
+//     });
+//     return promise;
+// }
 
 
 function findTown(tx, townName){
