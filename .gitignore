@@ -1,5 +1,5 @@
 .vs/
 node_modules/
-.vscode
+.vscode/
 react-app/*
 config/

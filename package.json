@@ -9,9 +9,9 @@
   "scripts": {
     "test": "mocha",
     "start": "node ./bin/www",
-    "dev": "concurrently \"SET NODE_ENV=development&&  SET PORT=3000 && nodemon --inspect ./bin/www\" \" cd transit-app && SET PORT=3001 && yarn start\"",
+    "dev": "concurrently \"SET NODE_ENV=development&&  SET PORT=3000 && nodemon --inspect ../api/bin/www\" \" cd transit-app && SET PORT=3001 && yarn start\"",
     "build": "cd transit-app && yarn build && cd .. && xcopy /e/h/y/q \"transit-app/build\" \"react-app\\\" > nul 2>&1 && del \"react-app\\app.html\" > nul 2>&1 && ren \"react-app\\index.html\" \"app.html\"",
-    "ubuntu-dev": "concurrently \"NODE_ENV=development PORT=3000 nodemon --inspect ./bin/www\" \" cd transit-app && PORT=3001 yarn start\""
+    "ubuntu-dev": "concurrently \"NODE_ENV=development PORT=3000 nodemon --inspect api/bin/www\" \" cd transit-app && PORT=3001 yarn start\""
   },
   "nodemonConfig": {
     "ignore": [
