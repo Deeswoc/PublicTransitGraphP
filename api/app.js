@@ -1,4 +1,5 @@
 'use strict'
+require('dotenv').config({path: __dirname + '/config/.env'});
 
 var createError = require('http-errors');
 var express = require('express');
