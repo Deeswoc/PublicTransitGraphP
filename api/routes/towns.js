@@ -1,7 +1,7 @@
 'use-strict'
 let express = require('express');
 let router = express.Router();
-let categoriesRouter = require('./categories');
+let categoriesRouter = require('./towns/categories');
 let townController = require('../controllers/townController');
 
 router.use('/categories', categoriesRouter);
