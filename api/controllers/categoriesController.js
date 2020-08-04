@@ -16,3 +16,17 @@ exports.get_categories = async(req, res, next) =>{
         });
     }
 }
+
+exports.add_categories = async(req, res, next) => {
+    try{
+        let categories = req.body.categories;
+        await catergoryModel.addTownCategories(categories);
+        res.send(201);
+    }catch (error) {
+        res.status(500).send({
+            success: false,
+            message: error.message,
+            error
+        });
+    }
+}

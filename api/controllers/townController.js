@@ -2,18 +2,6 @@ const
     graph = require('../routes/graphing'),
     townModel = require('../models/town/town');
 
-exports.get_categories = async(req, res, next) =>{
-    try {
-        let data = await graph.get_town_categories();
-        res.status(201).json(data);
-    } catch (error) {
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        });
-    }
-}
 exports.add_new_towns = async(req, res, next) =>{
     try {
         await townModel.addTowns(req.body.towns);
