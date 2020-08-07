@@ -5,11 +5,11 @@ const
 
 exports.getTownCategories = async function (){
     let session = driver.session();
-    const data = await session.readTransaction(tx => ta.getTownCategoriesTransaction(tx));
     let categories = [];
+    const data = await session.readTransaction(tx => ta.getTownCategoriesTransaction(tx));
     records = data.records
-    records.forEach((cat)=>{
-        categories.push(cat._fields[0].properties.Name);
+    records.forEach((category)=>{
+        categories.push(category._fields[0].properties.Name);
     })
     session.close();
     return categories;

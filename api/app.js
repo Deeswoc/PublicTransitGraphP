@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use('/', indexRouter);
 app.use('/towns', townRouter);
-app.use('/route', routeRouter);
+app.use('/routes', routeRouter);
 app.use('/app', appRouter);
 app.use(express.static('public'));
 app.use(express.static('react-app'));
