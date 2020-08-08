@@ -92,7 +92,8 @@ test('Must throw a not found error', async ()=>{
             return {ID};
         return null
     }
-    let validateTowns = routeModel.validateTowns(getTown, routeModel.NotFound);
+    let errorMessage = "Some IDs provided on path were not found in the database";
+    let validateTowns = routeModel.validateTowns(getTown, routeModel.NotFound, errorMessage);
 
     expect(await validateTowns([1, 3, 4])).toBe(true);
 
@@ -104,7 +105,7 @@ test('Must throw a not found error', async ()=>{
 
     expect(error.missing.length).toBeGreaterThan(0);
     expect(error).toBeInstanceOf(routeModel.NotFound);
-    expect(error.message).toEqual("Some IDs provided on path were not found in the database");
+    expect(error.message).toEqual(errorMessage);
 
 
 })
