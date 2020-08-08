@@ -3,9 +3,6 @@ const routeModel = require('./route');
 
 test('create a route in the database', async () => {
 
-    let data = {
-        message: "hi"
-    }
     let validateTowns = ()=>{
         return true
     }

@@ -1,5 +1,4 @@
 const 
-    graph = require('../routes/graphing'),
     townModel = require('../models/town/town');
 
 exports.add_new_towns = async(req, res, next) =>{
@@ -20,23 +19,7 @@ exports.add_new_towns = async(req, res, next) =>{
 }
 
 exports.get_out_bound_routes = async(req, res, next) =>{
-    promise = graph.getOutBoundRoutes(res, req);
-    promise.then(data=>{
-        res.status(201).send({
-            success:true,
-            message:'idk',
-            error:null,
-            data:data
-        })
-    }).catch((err) =>{
-        session.close();
-        driver.close();
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        });
-    });
+    res.done();
 }
 
 exports.get_town = async(req, res, next) =>{
