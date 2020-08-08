@@ -1,3 +1,5 @@
+const { error } = require("neo4j-driver");
+
 exports.addRoute = function (validateTowns, driver, ta){
     return async (route) => {
         await validateTowns(route.a, route.b);
@@ -9,33 +11,30 @@ exports.addRoute = function (validateTowns, driver, ta){
     }
 }
 
-exports.validateTowns = function(getTown){
+exports.validateTowns = function(getTown, NotFound){
     return async (a, b) => {
         a_exists = await getTown(a);
         b_exists = await getTown(b);
-        
-        if(!a_exists&&!b_exists){
-            a.missing = true;
-            b.missing = true;
-            throw new NotFound();
+        let error = new NotFound();
+
+        if(!a_exists)
+            error.missing.push(a);
+        if(!b_exists)
+            error.missing.push(b);
+        if(error.missing.length>0){
+            error.message = "Some IDs provided on path were not found in the database";
+            throw error;
         }
-        if(!a_exists){
-            a.missing = true;
-            throw new NotFound();
-        }
-        if(!b_exists){
-            b.missing = true;
-            throw new NotFound();
-        }
+        return true;
     }
 }
 
 
 
 class NotFound extends Error{
-    constructor(missing){
+    constructor(){
         super();
-        this.missing = missing;
+        this.missing = [];
     }
 }
 

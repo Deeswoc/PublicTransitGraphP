@@ -3,9 +3,11 @@ const
     townModel = require('../town/town'),
     ta = require('./routeTransactions'),
     { 
-        validateTowns,
+        validateTowns: getValidateTowns,
         addRoute,
+        NotFound
     } = require('./route');
 
 
-exports.addRoute = addRoute(validateTowns(townModel.getTown), driver, ta);
+let validateTowns = getValidateTowns(townModel.getTown, NotFound);
+exports.addRoute = addRoute(validateTowns, driver, ta);
