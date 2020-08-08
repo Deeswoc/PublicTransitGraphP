@@ -11,6 +11,10 @@ exports.add_new_route = async function (req, res, next){
                 status:false,
                 IDs: error.missing
             });
-        }     
+        }else(
+            res.status(500).json({
+                error: error.message
+            })
+        )     
     }
 }
