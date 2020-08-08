@@ -1,3 +1,5 @@
+'use strict'
+
 exports.addRoute = function (validateTowns, driver, ta){
     return async (route) => {
         await validateTowns(route.path);
@@ -18,7 +20,7 @@ exports.validateTowns = function(getTown, NotFound){
                 error.missing.push(towns[i]);    
         }
         if(error.missing.length>0){
-            error.message = "Some IDs provided on path were not found in the database";
+            error.message = "No town found for some IDs provided on path";
             throw error;
         }
         return true;

@@ -8,7 +8,7 @@ exports.addTownTransaction = function (tx, townName){
 exports.getTownTransaction = function (tx, townID){
     return tx.run(
         `
-Match (n)
+Match (n:Town)
 where id(n) = $id
 return n`,
         {id: townID}
