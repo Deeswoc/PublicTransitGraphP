@@ -34,45 +34,56 @@ test('create a route in the database', async () => {
 test('State if any element is missing from the passed elements', async () => {
 
     const mockIDs = [1, 2, 3, 4, 5, 6];
+    let error;
     let getTown = async (ID)=>{
         if(mockIDs.includes(ID))
             return {ID};
+        return null;
     }
-    let validateTowns = routeModel.validateTowns(getTown, routeModel.NotFound);
+    let errorMessage = "Some IDs provided on path were not found in the database";
+    let validateTowns = routeModel.validateTowns(getTown, routeModel.NotFound, errorMessage);
 
     expect(await validateTowns([1, 3, 4])).toBe(true);
 
     try{
         await validateTowns([4, 8, 129]);
-    }catch(error){
-        expect(error).toBeInstanceOf(routeModel.NotFound);
-        expect(error.missing).toEqual([8, 129]);
+    }catch(e){
+        error = e;
     }
+
+    expect(error).toBeInstanceOf(routeModel.NotFound);
+    expect(error.missing).toEqual([8, 129]);
+
 
     try{
         await validateTowns([23, 1]);
-    }catch(error){
-        expect(error).toBeInstanceOf(routeModel.NotFound);
-        expect(error.missing).toEqual([23]);
-        expect(error.missing.length).toBeGreaterThan(0);
+    }catch(e){
+        error = e;
     }
+
+    expect(error).toBeInstanceOf(routeModel.NotFound);
+    expect(error.missing).toEqual([23]);
+    expect(error.missing.length).toBeGreaterThan(0);
 
     try{
         await validateTowns([23, 100]);
-    }catch(error){
-        expect(error).toBeInstanceOf(routeModel.NotFound);
-        expect(error.missing).toEqual([23, 100]);
-        expect(error.missing.length).toBe(1);
+    }catch(e){
+        error = e;
     }
-
+    expect(error).toBeInstanceOf(routeModel.NotFound);
+    expect(error.missing).toEqual([23, 100]);
+    expect(error.missing.length).toBe(2);
+    
     try{
-        await validateTowns([23, 100]);
-    }catch(error){
-        expect(error).toBeInstanceOf(routeModel.NotFound);
-        expect(error.missing).toEqual([23, 100]);
-        expect(error.missing.length).toBe(1);
+        await validateTowns([23, 100, 123, 41, 44]);
+        
+    }catch(e){
+        error = e;
     }
-
+    expect(error).toBeInstanceOf(routeModel.NotFound);
+    expect(error.missing).toEqual([23, 100, 123, 41, 44]);
+    expect(error.missing.length).toBe(5);
+    
     expect(await validateTowns([2, 1])).toBe(true);
     expect(await validateTowns([2, 1, 3])).toBe(true);
     expect(await validateTowns([2, 1, 5, 6])).toBe(true);
