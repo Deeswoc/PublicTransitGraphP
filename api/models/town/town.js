@@ -6,6 +6,8 @@ exports.getTown = async function (townID){
     try {
         let session = driver.session();
         let data = await session.readTransaction(tx => ta.getTownTransaction(tx, townID));
+        if(data.records.length == 0)
+            return null;
         let town = data.records[0]._fields[0].properties;
         session.close();
         return town;

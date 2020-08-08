@@ -1,5 +1,3 @@
-const { error } = require("neo4j-driver");
-
 exports.addRoute = function (validateTowns, driver, ta){
     return async (route) => {
         await validateTowns(route.a, route.b);
