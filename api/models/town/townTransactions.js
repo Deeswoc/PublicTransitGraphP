@@ -19,7 +19,9 @@ exports.addTownsTransaction = function (tx, towns){
     return tx.run(
         `
 UNWIND $towns as town
-MERGE (a:area {Name: town.name}) with a
+MERGE (a:area:Town {Name: town.name, uuid: town.uuid}) with a, town
+MATCH (p:parish{Name: town.parish}) with a, p, town
+MERGE (a)-[:in]-(p) with a
 UNWIND a.categories as catName
 MATCH (category:LocationCategory {Name: catName}) 
 MERGE (a)-[:category]-(category)
@@ -55,8 +57,8 @@ exports.getTownCategoriesTransaction = function (tx){
 
 exports.getTownsTransaction = function (tx){
     return tx.run(
-        'MATCH (town:Town) ' +
-        'RETURN (town)'
+        'MATCH (area)-[:in]->(n:parish) ' +
+        'RETURN area, n.Name as parish' 
     )
 }
 

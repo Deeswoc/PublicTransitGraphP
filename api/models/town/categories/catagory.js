@@ -9,7 +9,10 @@ exports.getTownCategories = async function (){
     const data = await session.readTransaction(tx => ta.getTownCategoriesTransaction(tx));
     records = data.records
     records.forEach((category)=>{
-        categories.push(category._fields[0].properties.Name);
+        categories.push({
+            name:category.get(0).properties.Name,
+            id:category.get(0).properties.id
+        });
     })
     session.close();
     return categories;

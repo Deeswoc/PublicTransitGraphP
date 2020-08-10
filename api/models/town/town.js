@@ -1,51 +1,67 @@
 const
-    driver = require('../../config/database'),
     ta = require('./townTransactions');
 
-exports.getTown = async function (townID){
-    try {
+exports.getTown = function(driver, ta){
+    return async function (townID){
+        
         let session = driver.session();
-        let data = await session.readTransaction(tx => ta.getTownTransaction(tx, townID));
-        if(data.records.length == 0)
-            return null;
-        let town = data.records[0]._fields[0].properties;
-        session.close();
-        return town;
-    } catch (error) {
-        console.log(error.message);
-        session.close();
+        try {
+            let data = await session.readTransaction(tx => ta.getTownTransaction(tx, townID));
+            if(data.records.length == 0)
+                return null;
+            let town = data.records[0]._fields[0].properties;
+            session.close();
+            return town;
+        } catch (error) {
+            console.log(error.message);
+            session.close();
+        }
     }
 }
 
-exports.getTowns = async function(){
-    try {
-        let session = driver.session();
-        data = await session.readTransaction(tx => ta.getTownsTransaction(tx));
-        let townArr = [];
-        data.records.forEach(element => {
-            townArr.push({
-                name: element._fields[0].properties.Name,
-                parish: element._fields[0].properties.parish
+
+exports.getTowns = function(driver, ta){
+    return async function(){
+        try {
+            let session = driver.session();
+            data = await session.readTransaction(tx => ta.getTownsTransaction(tx));
+            let townArr = [];
+            data.records.forEach(element => {
+                townArr.push({
+                    name: element.get('area').properties.Name,
+                    id:element.get('area').properties.uuid,
+                    parish: element.get('parish')
+                })
+            });
+            return townArr;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+}
+
+exports.addTowns = function(driver, ta, createID){
+    return async function (towns){
+        let session;
+        try {
+            session = driver.session();
+            towns = towns.map(town => {
+                return {
+                    ...town,
+                    uuid: createID()
+                } 
             })
-        });
-        return townArr;
-    } catch (error) {
-        console.log(error.message);
+            const data = await session.writeTransaction(tx => ta.addTownsTransaction(tx, towns));
+            console.log(data);
+        } catch (error) {
+            console.log(error.message);
+        }finally{
+            session.close();
+        }
     }
+    
 }
 
-exports.addTowns = async function (towns){
-    let session;
-    try {
-        session = driver.session();
-        const data = await session.writeTransaction(tx => ta.addTownsTransaction(tx, towns));
-        console.log(data);
-    } catch (error) {
-        console.log(error.message);
-    }finally{
-        session.close();
-    }
-}
 
 
 exports.addTown = async function (res, townName) {

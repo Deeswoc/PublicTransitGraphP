@@ -1,6 +1,6 @@
 const 
-    townModel = require('../models/town/town');
 
+    townModel = require('../models/town');
 exports.add_new_towns = async(req, res, next) =>{
     try {
         await townModel.addTowns(req.body.towns);
