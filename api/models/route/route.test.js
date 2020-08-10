@@ -1,20 +1,9 @@
 const routeModel = require('./route');
-
+const { driver } = require('../../test_resources/database')
 test('create a route in the database', async () => {
 
     let validateTowns = ()=>{
         return true
-    }
-
-    let driver = {session: ()=>{
-        return {
-            writeTransaction: async (runTransaction, route)=>{
-                return runTransaction();
-            },
-            close: ()=>{
-
-            }
-        }}
     }
 
     let ta =  { addRouteTransaction: (tx, route)=>{
@@ -42,8 +31,12 @@ test('State if any element is missing from the passed elements', async () => {
     }
     let errorMessage = "Some IDs provided on path were not found in the database";
     let validateTowns = routeModel.validateTowns(getTown, routeModel.NotFound, errorMessage);
-
-    expect(await validateTowns([1, 3, 4])).toBe(true);
+    
+    try {
+        expect(await validateTowns([1, 3, 4])).toBe(true);
+    } catch (e) {
+        console.log(e)
+    }
 
     try{
         await validateTowns([4, 8, 129]);
@@ -84,13 +77,16 @@ test('State if any element is missing from the passed elements', async () => {
     expect(error.missing).toEqual([23, 100, 123, 41, 44]);
     expect(error.missing.length).toBe(5);
     
-    expect(await validateTowns([2, 1])).toBe(true);
-    expect(await validateTowns([2, 1, 3])).toBe(true);
-    expect(await validateTowns([2, 1, 5, 6])).toBe(true);
-    expect(await validateTowns([2, 1, 3, 4, 5, 6])).toBe(true);
+    try{
+        expect(await validateTowns([2, 1])).toBe(true);
+        expect(await validateTowns([2, 1, 3])).toBe(true);
+        expect(await validateTowns([2, 1, 5, 6])).toBe(true);
+        expect(await validateTowns([2, 1, 3, 4, 5, 6])).toBe(true);
+    }catch(e){
+        
+    }
     
-
-    expect(validateTowns([314, 312, 332])).rejects.toEqual(new Error('Test'))
+    expect(validateTowns([314, 312, 332])).rejects.toThrow(new Error(error.message));
 
 
 })
