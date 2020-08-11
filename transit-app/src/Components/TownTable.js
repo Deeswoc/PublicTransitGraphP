@@ -14,7 +14,7 @@ export default function TownTable (props) {
                     <tr key={town.id}>
                         <td>{town.name}</td>
                         <td>{town.parish}</td>
-                        <td>{town.categories.map((category, index, arr)=>(`${category}${index + 1 !== arr.length ? ', ' : ''}`))}</td>
+                        <td>{town.categories.map((category, index, arr)=>(`${category.name}${index + 1 !== arr.length ? ', ' : ''}`))}</td>
                     </tr>
                 ))}
             </tbody>

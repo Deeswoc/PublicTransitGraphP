@@ -17,7 +17,7 @@ export default function newTownFormContextReducer(state, action){
             if(state.catList.length>0) {
                 return {
                    ...state,
-                   catList: state.catList.filter(c => c.localeCompare(state.category) !== 0),
+                   catList: state.catList.filter(category => category.id.localeCompare(state.category.id) !== 0),
                    categories: [...state.categories, state.category],
                 };
              }
@@ -35,7 +35,7 @@ export default function newTownFormContextReducer(state, action){
             if(state.categories.length>0){
                 return {
                     ...state, 
-                    categories: state.categories.filter(c => c.localeCompare(action.cat)!==0),
+                    categories: state.categories.filter(category => category.id.localeCompare(action.cat.id)!==0),
                     catList: [...state.catList, action.cat]
                 }
             } else return state;

@@ -1,8 +1,7 @@
 exports.getTownCategoriesTransaction = function (tx){
     return tx.run(
         `MATCH (category:LocationCategory)
-        RETURN category
-        ORDER BY category.Name
+        RETURN category 
         `
     )
 }

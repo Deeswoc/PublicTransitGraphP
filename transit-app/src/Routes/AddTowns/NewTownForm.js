@@ -78,7 +78,7 @@ function LocCat(props){
     },[catList, dispatch]);
     return(
         <select defaultValue={catList[0]} style={{minWidth: 110}} onChange={onChange}>
-            {catList.sort().map(category => (<option value={category}>{category}</option>))}
+            {catList.sort().map(category => (<option key={category.id} value={category.id}>{category.name}</option>))}
         </select>
     )
 }

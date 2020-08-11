@@ -23,7 +23,7 @@ function SelectedItem(props){
             (e) => {
                 dispatch({type: actions.REMOVE_CATEGORY, cat: props.value});
             }
-        }>{props.value}</li>    
+        }>{props.value.name}</li>    
     )
 }
 

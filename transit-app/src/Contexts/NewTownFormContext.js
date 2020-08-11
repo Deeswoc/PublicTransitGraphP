@@ -9,7 +9,7 @@ function NewTownFormContextProvider (props){
         towns:[],
         name: '',
         parish: '',
-        category: '',
+        category: {},
         townsToSubmit: [],
         categories:[],
         catList:[],

@@ -10,8 +10,9 @@ exports.getTownCategories = async function (){
     records = data.records
     records.forEach((category)=>{
         categories.push({
+            id:category.get(0).properties.uuid,
             name:category.get(0).properties.Name,
-            id:category.get(0).properties.id
+            description:category.get(0).properties.description
         });
     })
     session.close();
