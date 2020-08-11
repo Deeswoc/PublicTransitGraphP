@@ -7,8 +7,8 @@ function MultiSelWindow(props){
     return (
         <div>
             <ul>   
-                {categories.map((category) =>  (
-                    <SelectedItem value={category} />
+                {categories.map((category, i) =>  (
+                    <SelectedItem key={category.id} value={category} />
                 ))}
             </ul>
         </div>
@@ -21,7 +21,7 @@ function SelectedItem(props){
     return (
         <li onClick={
             (e) => {
-                dispatch({type: actions.REMOVE_CATEGORY, cat: props.value});
+                dispatch({type: actions.REMOVE_CATEGORY, cat: props.value.id});
             }
         }>{props.value.name}</li>    
     )

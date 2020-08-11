@@ -15,10 +15,11 @@ export default function newTownFormContextReducer(state, action){
         }
         case 'ADD_CATEGORY':{
             if(state.catList.length>0) {
+                let currentCat = state.catList.filter(category => category.id.localeCompare(state.category) === 0)[0];
                 return {
                    ...state,
-                   catList: state.catList.filter(category => category.id.localeCompare(state.category.id) !== 0),
-                   categories: [...state.categories, state.category],
+                   catList: state.catList.filter(category => category.id.localeCompare(state.category) !== 0),
+                   categories: [...state.categories, currentCat],
                 };
              }
              return state;
@@ -35,8 +36,8 @@ export default function newTownFormContextReducer(state, action){
             if(state.categories.length>0){
                 return {
                     ...state, 
-                    categories: state.categories.filter(category => category.id.localeCompare(action.cat.id)!==0),
-                    catList: [...state.catList, action.cat]
+                    categories: state.categories.filter(category => category.id.localeCompare(action.cat)!==0),
+                    catList: [...state.catList, state.categories.filter(category => category.id.localeCompare(action.cat)===0)[0]]
                 }
             } else return state;
         }

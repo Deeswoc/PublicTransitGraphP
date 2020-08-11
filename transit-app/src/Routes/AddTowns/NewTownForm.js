@@ -74,7 +74,8 @@ function LocCat(props){
     }
 
     useEffect(()=>{
-        dispatch({type:actions.STATE, $: {category: catList[0]}});
+        if(catList.length>0)
+            dispatch({type:actions.STATE, $: {category: catList[0].id}});
     },[catList, dispatch]);
     return(
         <select defaultValue={catList[0]} style={{minWidth: 110}} onChange={onChange}>
