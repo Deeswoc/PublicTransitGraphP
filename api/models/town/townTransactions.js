@@ -1,10 +1,3 @@
-exports.addTownTransaction = function (tx, townName){
-    return tx.run(
-'MERGE (a:Town {Name: $name}) ' + 
-'RETURN a', {name: townName}
-    )
-}
-
 exports.getTownTransaction = function (tx, townID){
     return tx.run(
         `

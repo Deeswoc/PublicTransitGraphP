@@ -61,35 +61,3 @@ exports.addTowns = function(driver, ta, createID){
     }
     
 }
-
-
-
-exports.addTown = async function (res, townName) {
-
-    try {
-        session = driver.session();
-        const data  = await session.writeTransaction(tx => addTownTransaction(tx, townName));
-    } catch (error) {
-        
-    }
-
-    promise.then(data=>{
-        res.status(201).send({
-            success: true,
-            message: 'Town Added Successfully',
-            error: null,
-            data: data
-        });
-        session.close();
-        
-    }).catch((err) =>{
-        session.close();
-        res.status(500).send({
-            success: false,
-            message: err.message,
-            error: err
-        })
-    }
-    )
-    return promise;
-}
