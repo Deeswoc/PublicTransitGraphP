@@ -14,10 +14,10 @@ exports.addTownsTransaction = function (tx, towns){
 UNWIND $towns as town
 MERGE (a:area:Town {Name: town.name, uuid: town.uuid}) with a, town
 MATCH (p:parish{Name: town.parish}) with a, p, town
-MERGE (a)-[:in]-(p) with a
-UNWIND a.categories as catName
-MATCH (category:LocationCategory {Name: catName}) 
-MERGE (a)-[:category]-(category)
+MERGE (a)-[:in]-(p) with a, town
+UNWIND town.categories as category
+MATCH (c:LocationCategory {uuid: category.uuid}) 
+MERGE (a)-[:category]-(c)
 RETURN (a)
 `, {towns}
     )
