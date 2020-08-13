@@ -16,7 +16,7 @@ MERGE (a:area:Town {Name: town.name, uuid: town.uuid}) with a, town
 MATCH (p:parish{Name: town.parish}) with a, p, town
 MERGE (a)-[:in]-(p) with a, town
 UNWIND town.categories as category
-MATCH (c:LocationCategory {uuid: category.uuid}) 
+MATCH (c:LocationCategory {uuid: category}) 
 MERGE (a)-[:category]-(c)
 RETURN (a)
 `, {towns}
