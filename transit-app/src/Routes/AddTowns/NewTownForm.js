@@ -4,7 +4,7 @@ import MultiSelWindow from '../../Components/MultiSelectWindow'
 import { NewTownFormContext } from '../../Contexts/NewTownFormContext';
 import { actions } from '../../Contexts/NewTownFormContextReducers/newTownFormContextReducer';
 import TownTable from '../../Components/TownTable';
-
+import d from '../../devURL';
 
 class NewTownForm extends Component{
     constructor(props){
@@ -54,7 +54,27 @@ class NewTownForm extends Component{
                             dispatch({type:actions.RESET_FORM});
                         }
                     }>Add Town</button>
-                    <button type="submit" onClick={submit}>Submit</button>
+                    <button type="submit" onClick={(e)=>{
+                        e.preventDefault();
+                        let towns = {towns:townsToSubmit.map(town=>{
+                            return {
+                                name:town.name,
+                                parish:town.parish, 
+                                categories:town.categories.map(cat=>cat.id)
+                            }
+                        })};
+                        fetch(`${d}/towns`, {
+                            method:'POST',
+                            headers:{
+                                'Content-type':'application/json'
+                            },
+                            body:JSON.stringify(towns)
+                        })
+                        .then(response=>{
+                            console.log(response.status);
+                        })
+
+                    }}>Submit</button>
                     <TownTable townList = {townsToSubmit}/>
 
                 </form>
