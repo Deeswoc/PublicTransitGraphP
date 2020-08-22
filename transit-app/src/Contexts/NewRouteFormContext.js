@@ -1,5 +1,6 @@
-import React, { createContext, useReducer } from 'react'
-import newRouteFormContextReducer from './NewRouteFormContextReducers/NewRouteFormContextReducer.js';
+import React, { createContext, useReducer, useEffect } from 'react';
+import d from '../devURL';
+import newRouteFormContextReducer, { actions as act}from './NewRouteFormContextReducers/NewRouteFormContextReducer.js';
 export const NewRouteFormContext = createContext();
 
 
@@ -18,21 +19,25 @@ function NewRouteFormContextProvider(props){
         },
         midPoints: [],
         fare: {
-            endToEnd: {
-                Adult: 0,
-                Child: 0,
-                Elder: 0
-            },
-            via: {
-                Adult: 0,
-                Child: 0,
-                Elder: 0
-            }
+            origin: 0,
+            via:0
         },
         corperate: false,
-        class: ""
+        class: "",
+        areas: []
     }
+
+    
     const [state, dispatch] = useReducer(newRouteFormContextReducer, initialState);
+    
+    useEffect(()=>{ 
+        let $ = async() => {
+            let data = await fetch(`${d}/towns/`);
+            let areas = await data.json();
+            dispatch({type: act.setAreaList, areas});
+        };
+        $();
+    }, [])
     return (
         <NewRouteFormContext.Provider value = {{ ...state, dispatch }}>
             {props.children}

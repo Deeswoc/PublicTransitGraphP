@@ -60,6 +60,33 @@ function newRouteFormContextReducer(state, action){
             }
         }
 
+        case actions.setOriginFare:{
+            return {
+                ...state,
+                fare: {
+                    ...state.fare,
+                    origin: action.fare
+                }
+            }
+        }
+
+        case actions.setViaFare:{
+            return {
+                ...state,
+                fare: {
+                    ...state.fare,
+                    via: action.fare
+                }
+            }
+        }
+
+        case actions.setAreaList:{
+            return {
+                ...state,
+                areas: action.areas
+            }
+        }
+        
         default: {
             return state;
         }
@@ -74,5 +101,8 @@ export let actions = {
     setEndPointBParish: 4,
     setMidPointName: 5,
     setMidPointParish: 7,
-    removeMidPoint: 8
+    removeMidPoint: 8,
+    setOriginFare: 9,
+    setViaFare: 10,
+    setAreaList: 11
 }
