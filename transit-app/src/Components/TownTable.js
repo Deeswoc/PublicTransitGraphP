@@ -1,20 +1,22 @@
 import React from 'react';
 import PropT from 'prop-types';
 
-export default function TownTable (props) {
+export default function TownTable(props) {
     return (
-        <table>
-            <tbody>
+        <table className="table table-dark table-striped">
+            <thead className="thead-light">
                 <tr>
                     <th>Name</th>
                     <th>Parish</th>
                     <th>Categories</th>
                 </tr>
-                {props.townList.map((town, i) =>(
-                    <tr key={town.id||i}>
+            </thead>
+            <tbody>
+                {props.townList.map((town, i) => (
+                    <tr key={town.id || i}>
                         <td>{town.name}</td>
                         <td>{town.parish}</td>
-                        <td>{town.categories.map((category, index, arr)=>(`${category.name}${index + 1 !== arr.length ? ', ' : ''}`))}</td>
+                        <td>{town.categories.map((category, index, arr) => (`${category.name}${index + 1 !== arr.length ? ', ' : ''}`))}</td>
                     </tr>
                 ))}
             </tbody>
