@@ -1,6 +1,6 @@
-exports.addRouteTransaction = function(tx, route){
+exports.addRouteTransaction = function (tx, route) {
     return tx.run(
-`
+        `
 //Create Route
 
 // Define Route
@@ -26,14 +26,24 @@ UNWIND index as i
     MATCH (m) where m.uuid = towns[i+1] with n, m
     MERGE (n)-[:Route]->(m) with n, m
     MERGE (n)<-[:Route]-(m)`,
-    {
-        route: route.path,
-        via_fare: route.fare.via,
-        origin_fare: route.fare.origin,
-        via: route.path.filter((passes, i, arr) => {
-            if(i!=0 && i!= arr.length - 1)
-                return passes;
-        })
-    }    
+        {
+            route: route.path,
+            via_fare: route.fare.via,
+            origin_fare: route.fare.origin,
+            via: route.path.filter((passes, i, arr) => {
+                if (i != 0 && i != arr.length - 1)
+                    return passes;
+            })
+        }
+    )
+}
+
+exports.getRoutesTransaction = function (tx, route) {
+    return tx.run(
+        `
+match (r:transit) with r
+match (e)<-[:origin]-(r)
+return r.Name as \`Route\`, COLLECT({Name: e.Name, id: e.uuid}) as \`Route Origins\`
+            `
     )
 }

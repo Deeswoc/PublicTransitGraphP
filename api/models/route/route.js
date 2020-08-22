@@ -11,6 +11,23 @@ exports.addRoute = function (validateTowns, driver, ta){
     }
 }
 
+exports.getRoutes = function(driver, ta){
+    return async() => {
+        let session = driver.session();
+        let routes = [];
+        let data = await session.readTransaction(tx => ta.getRoutesTransaction(tx));
+        let records = data.records;
+        records.forEach((route) => {
+            routes.push({
+                name: route.get(0),
+                origins: route.get(1)
+            })
+        })
+        session.close();
+        return routes;
+    }
+}
+
 exports.validateTowns = function(getTown, NotFound, errorMessage){
     return async (towns) => {
         let error = new NotFound(errorMessage);
