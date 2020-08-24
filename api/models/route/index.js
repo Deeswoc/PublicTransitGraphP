@@ -6,6 +6,7 @@ const
         validateTowns: getValidateTowns,
         addRoute,
         getRoutes,
+        getShortestPath,
         NotFound
     } = require('./route');
 
@@ -13,3 +14,4 @@ const
 let validateTowns = getValidateTowns(townModel.getTown, NotFound, "No town found for some IDs provided on path");
 exports.addRoute = addRoute(validateTowns, driver, ta);
 exports.getRoutes = getRoutes(driver, ta);
+exports.getShortestPath = getShortestPath(validateTowns, driver, ta);
