@@ -2,9 +2,10 @@
 let express = require('express');
 let router = express.Router();
 let routeController = require('../controllers/routeController.js')
-
+let shortestPath = require('./routes/shortestPath');
 router.post('/', routeController.add_new_route);
 router.get('/', routeController.get_routes);
+router.use('/shortest-path', shortestPath);
 // router.post('/add-routes', routeController.add_new_routes);
 // router.post('/add-town-to-route', routeController.add_town_to_route)
 // router.get('/get-towns-on-route', routeController.get_towns_on_routes);

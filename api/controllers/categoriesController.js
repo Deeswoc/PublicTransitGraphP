@@ -7,7 +7,7 @@ exports.test = (req, res, next) => {
 exports.get_categories = async(req, res, next) =>{
     try {
         let data = await catergoryModel.getTownCategories();
-        res.status(201).json(data);
+        res.status(200).json(data);
     } catch (error) {
         res.status(500).send({
             success: false,

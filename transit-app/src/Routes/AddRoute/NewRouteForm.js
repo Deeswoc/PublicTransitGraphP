@@ -64,13 +64,13 @@ let NewRouteForm = (props) => {
                 <label htmlFor="end_to_end">End to End</label>$ <input name="end_to_end" type="number" min="0" step="5" value={fare.origin} onChange={(e) => {
                     dispatch({
                         type: act.setOriginFare,
-                        fare: e.target.value
+                        fare: parseInt(e.target.value)
                     })
                 }}></input>
                 <label htmlFor="via">Via</label>$ <input name="children" type="number" min="0" step="5" value={fare.via} onChange={(e) => {
                     dispatch({
                         type: act.setViaFare,
-                        fare: e.target.value
+                        fare: parseInt(e.target.value)
                     })
                 }}></input>
             </fieldset>

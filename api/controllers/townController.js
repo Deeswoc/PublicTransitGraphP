@@ -26,7 +26,7 @@ exports.get_town = async(req, res, next) =>{
     try {
         let id = parseInt(req.params.id);
         const town = await townModel.getTown(id);
-        res.status(201).json(town);
+        res.status(200).json(town);
     } catch (error) {
         res.status(500).send({
             success: false,
@@ -39,7 +39,7 @@ exports.get_town = async(req, res, next) =>{
 exports.get_towns = async(req, res, next) =>{
     try {
         let towns = await townModel.getTowns();
-        res.status(201).json(towns);  
+        res.status(200).json(towns);  
     } catch (error) {
         res.status(500).send({
             success: false,
