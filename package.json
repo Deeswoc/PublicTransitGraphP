@@ -42,6 +42,7 @@
     "express-validator": "^6.6.1",
     "graphql": "^15.0.0",
     "http-errors": "~1.6.3",
+    "lodash": "^4.17.20",
     "morgan": "~1.9.1",
     "mysql2": "2.1.0",
     "neo4j-driver": "^4.0.2",

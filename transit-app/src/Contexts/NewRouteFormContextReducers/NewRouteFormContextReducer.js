@@ -41,7 +41,16 @@ function newRouteFormContextReducer(state, action){
         case actions.setMidPointName:{
             return ({...state, midPoints: [...state.midPoints.map((midPoint, i)=>{
                 if(i===action.index)
-                    return action.updatedMidPoint;
+                    return {...midPoint, name:action.name};
+                else
+                    return midPoint;
+            })]}) 
+        }
+
+        case actions.setMidPointID:{
+            return ({...state, midPoints: [...state.midPoints.map((midPoint, i)=>{
+                if(i===action.index)
+                    return {...midPoint, id:action.ID};
                 else
                     return midPoint;
             })]}) 
@@ -86,6 +95,40 @@ function newRouteFormContextReducer(state, action){
                 areas: action.areas
             }
         }
+
+        case actions.setEndPointAID:{
+            return {
+                ...state, endPoints: {
+                    ...state.endPoints, 
+                    A: {
+                        ...state.endPoints.A, 
+                        id: action.id
+                    }
+                }
+            }
+        }
+
+
+        case actions.setEndPointBID:{
+            return {
+                ...state, endPoints: {
+                    ...state.endPoints, 
+                    B: {
+                        ...state.endPoints.B, 
+                        id: action.id
+                    }
+                }
+            }
+        }
+
+
+
+        case actions.setMatrix:{
+            return {
+                ...state,
+                matrix: action.matrix
+            }
+        }
         
         default: {
             return state;
@@ -96,13 +139,15 @@ function newRouteFormContextReducer(state, action){
 export let actions = {
     addMidPoint: 0,
     setEndPointAName: 1,
-    setEndPointAParish: 2,
+    setEndPointAID: 2,
     setEndPointBName: 3,
-    setEndPointBParish: 4,
+    setEndPointBID: 4,
     setMidPointName: 5,
     setMidPointParish: 7,
     removeMidPoint: 8,
     setOriginFare: 9,
     setViaFare: 10,
-    setAreaList: 11
+    setMatrix: 12,
+    setAreaList: 11,
+    setMidPointID: 13
 }

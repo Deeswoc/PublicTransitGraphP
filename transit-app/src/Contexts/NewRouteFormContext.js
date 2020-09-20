@@ -18,6 +18,10 @@ function NewRouteFormContextProvider(props){
             }
         },
         midPoints: [],
+        transitMatrix: {pickup:[
+            {dropOff:[0, 0]},
+            {dropOff:[0, 0]}
+        ]},
         fare: {
             origin: 0,
             via:0
