@@ -2,7 +2,7 @@ const routeModel = require('../models/route');
 const { NotFound } = require('../models/route/route')
 exports.add_new_route = async function (req, res, next) {
     try {
-        await routeModel.addRoute(req.body);
+        await routeModel.addRoute(req.body.pickup);
         res.sendStatus(201);
     } catch (error) {
         if (error instanceof NotFound) {
@@ -11,11 +11,13 @@ exports.add_new_route = async function (req, res, next) {
                 status: false,
                 IDs: error.missing
             });
-        } else (
+            console.error()
+        } else {
+            console.error(error);
             res.status(500).json({
                 error: error.message
             })
-        )
+        }
     }
 }
 
@@ -25,7 +27,6 @@ exports.get_routes = async function (req, res, next) {
         res.status(200).json(routes);
     } catch (error) {
         console.error(error);
-
         res.status(500).json({
             error: error.message
         })

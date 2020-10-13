@@ -1,8 +1,7 @@
 exports.getTownTransaction = function (tx, townID){
     return tx.run(
         `
-Match (n:Town)
-where id(n) = $id
+Match (n{uuid:$id})
 return n`,
         {id: townID}
     )

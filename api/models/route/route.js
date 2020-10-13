@@ -1,11 +1,11 @@
 'use strict'
 
 exports.addRoute = function (validateTowns, driver, ta) {
-    return async (route) => {
-        await validateTowns(route.path);
+    return async (towns) => {
+        await validateTowns(towns);
 
         let session = driver.session();
-        let data = await session.writeTransaction(tx => ta.addRouteTransaction(tx, route));
+        let data = await session.writeTransaction(tx => ta.addRouteTransaction(tx, towns));
         session.close();
         return data;
     }
@@ -31,7 +31,9 @@ exports.getRoutes = function (driver, ta) {
 exports.getShortestPath = function (validateTowns, driver, ta) {
 
     return async (townA, townB) => {
-        await validateTowns([townA, townB]);
+        let towns = [];
+        towns.push({uuid: townA}, {uuid: townB})
+        await validateTowns(towns);
 
         let session = driver.session();
         let data = await session.readTransaction(tx => ta.getShortestPathTransaction(tx, townA, townB));
@@ -42,12 +44,12 @@ exports.getShortestPath = function (validateTowns, driver, ta) {
 }
 
 exports.validateTowns = function (getTown, NotFound, errorMessage) {
-    return async (towns) => {
+    return async (matrix) => {
         let error = new NotFound(errorMessage);
-        for (let i = 0; i < towns.length; i++) {
-            let town = await getTown(towns[i]);
+        for (let i = 0; i < matrix.length; i++) {
+            let town = await getTown(matrix[i].uuid);
             if (town === null)
-                error.missing.push(towns[i]);
+                error.missing.push(matrix[i]);
         }
         if (error.missing.length > 0) {
             throw error;

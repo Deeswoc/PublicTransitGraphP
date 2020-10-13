@@ -1,49 +1,63 @@
-exports.addRouteTransaction = function (tx, route) {
+exports.addRouteTransaction = function (tx, matrix) {
+
+    // console.log("Route: ", matrix.map((town)=>{return town.uuid}));
+    // console.log("fareMatrix", {pickUp: matrix});
+    // matrix.forEach((item, i) => {
+    //     console.log("DropOff ", i, " ", item.dropOff);
+    // })
+    // console.log("Origin Fare", 120);
     return tx.run(
         `
-//Create Route
+        //Create Route With matrix 1.2
 
-// Define Route
-with $route as towns
-// Find Origin Nodes
-MATCH (x:area{uuid:towns[0]}) WITH x, towns
-MATCH (y:area{uuid:last(towns)}) WITH x, y, towns
-
-// Create Route/Transit Node
-MERGE (x)-[:origin{fare:0}]->(r:transit{Name:x.Name + " to " + y.Name})-[:origin{fare:$originFare}]->(y) with x, r, y, towns
-MERGE (x)<-[:origin{fare:$originFare}]-(r)<-[:origin{fare:0}]-(y) with x, y, r, towns
-
-// Towns passed through
-MATCH (n:area) where n.uuid in $via
-    MERGE (n)-[:via{fare:$viaFare}]->(r)
-    MERGE (n)<-[:via{fare:$viaFare}]-(r)
-    with n, x, y, towns 
-
-
-// Allows for cost to be calculated when boarding from a pass-through area
-CREATE (v:via) with n, x, y, towns, v
-MERGE (n)-[:takeFrom{fare:0}]->(v) with n, x, y, towns, v
-UNWIND towns as townID
-MATCH (t{uuid:townID}) where not exists ((t)<-[:takeFrom]-(v))
-MERGE (v)-[:exitsAt{fare:$viaFare}]->(t)
-    
+        // towns => array of IDs that lists the path of the from one endpoint to the other
+        WITH $route as towns
         
-// Define the route the trasportation takes through areas        
-WITH towns, range(0, size(towns)-2) as index
-UNWIND index as i
-
-    MATCH (n) where n.uuid = towns[i] with n, towns, i 
-    MATCH (m) where m.uuid = towns[i+1] with n, m
-    MERGE (n)-[:Route]->(m) with n, m
-    MERGE (n)<-[:Route]-(m)`,
+        // Find Origin Nodes
+        // x => EndPoint Node
+        // y => EndPoint Node
+        MATCH (x:area{uuid:towns[0]}) WITH x, towns
+        MATCH (y:area{uuid:last(towns)}) WITH x, y, towns
+        
+        // Create Route/Transit Node
+        // r => Transit Node
+        MERGE (x)-[:origin{fare:0}]->(r:transit{Name:x.Name + " to " + y.Name})-[:origin{fare:$originFare}]->(y) with x, r, y, towns
+        MERGE (x)<-[:origin{fare:$originFare}]-(r)<-[:origin{fare:0}]-(y) with x, y, r, towns
+        
+        // Adds the via relationship between the Transit Node and the towns on its route between the endpoints
+        // n => nodes on route that aren't the origin
+        MATCH (n:area) where n.uuid in towns and not exists((r)-[:origin]-(n))
+        MERGE (n)-[:via]->(r)
+        
+        // pickUp => array of pickUp objects
+        // 	{
+        //	  uuid => id of town where the persons is picked up by transit,
+        //    dropOff => array of dropOff objects
+        //  }
+        WITH n, x, y, r, towns, $fareMatrix.pickUp as pickUp
+        
+        // Add Fare Matrix as 
+        UNWIND pickUp as p
+          MATCH (getOn{uuid:p.uuid})
+          MERGE (getOn)-[:getOn{fare:0}]->(v:via)-[:onRoute]->(r)
+          WITH v, r, p, towns
+          UNWIND p.dropOff as q
+            MATCH (getOff{uuid:q.uuid}) 
+            MERGE (v)-[:getOff{fare:q.fare}]-(getOff)
+        
+        
+                
+        // Define the route the trasportation takes through areas        
+        WITH towns, range(0, size(towns)-2) as index
+        UNWIND index as i
+            MATCH (n) where n.uuid = towns[i] with n, towns, i 
+            MATCH (m) where m.uuid = towns[i+1] with n, m
+            MERGE (n)-[:Route]->(m) with n, m
+            MERGE (n)<-[:Route]-(m)`,
         {
-            route: route.path,
-            viaFare: route.fare.via,
-            originFare: route.fare.origin,
-            via: route.path.filter((passes, i, arr) => {
-                if (i != 0 && i != arr.length - 1)
-                    return passes;
-            })
+            route: matrix.map((town)=>{return town.uuid}),
+            fareMatrix: {pickUp: matrix},
+            originFare: 120
         }
     )
 }
@@ -66,33 +80,24 @@ exports.getShortestPathTransaction = function (tx, townA, townB) {
 match (x{uuid:$townA}) with x 
 match (y{uuid:$townB}) with x, y
 
-// Here I create a config that will be used to run the shortest
-// path algorithm. Set it as "config" for readability
-{
-  
-  startNode: x,
-  endNode: y,
-  // Get the nodes that will be used in the algorithm
-  nodeQuery: "match (n) return id(n) as id", 
-  // Get all the relationships that will be used in the algorithm
-  // Since the rgraph is being weighed using the fare it must be returned 
-  // from the relationship query
-  relationshipQuery:
-  	'MATCH (n)-[r:via|origin]->(m) return id(n) as source, id(m) as target, r.fare as cost',
-  // here is where you set the weighted property returned from the relationship query
-  relationshipWeightProperty: 'cost'
-} as config
-
-// Calling the shortestPath algorithm and streamed the results while
-// passing in the previously defined configuration
-CALL gds.alpha.shortestPath.stream(config)
-
-// Algorithm returns the ID of the nodes on the
-// shortest path and cost from the function
-YIELD nodeId, cost
-
-// Returns the node and commilative cost of the route
-RETURN gds.util.asNode(nodeId) AS node, cost
-`, {townA, townB}
+//Getting the shortest path by fare 1.4
+call gds.alpha.shortestPath.stream({
+	startNode:x,
+    endNode:y,
+	relationshipWeightProperty: 'fare', 
+    nodeQuery: 'Match (n) return id(n) as id',
+    relationshipQuery:'MATCH(n)-[r]->(m) RETURN id(n) AS source, id(m) AS target, r.fare AS fare',
+    relationshipWeightProperty:'fare'
+    })
+yield nodeId, cost 
+match (n) where id(n) = nodeId with n, nodeId, cost
+optional match (n)-[:onRoute]->(m) 
+return 
+CASE "via" in labels(n)
+WHEN true
+then m
+WHEN false
+then n
+END as \`Step\`, cost`, {townA, townB}
     )
 }
