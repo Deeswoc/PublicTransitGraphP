@@ -30,7 +30,7 @@ let NewRouteForm = (props) => {
     const [townsOnRoute, setTownsOnRoute] = useState([]);
     const {
         endPoints,
-        transitMatrix,
+        matrix,
         fare,
         dispatch,
         areas, 
@@ -95,19 +95,13 @@ let NewRouteForm = (props) => {
                 }}></input>
             </fieldset>
             <button type='submit' onClick={(e)=>{
-                e.preventDefault();
-                
-                let path = [endPoints.A.name, ...midPoints, endPoints.B.name]
-                let route = {
-                    fare, 
-                    path
-                }
+                e.preventDefault();                
                 fetch(`${d}/routes`, {
                     method:'POST',
                     headers:{
                         'Content-type':'application/json'
                     },
-                    body:JSON.stringify(route)
+                    body:JSON.stringify(matrix)
                 })
                 .then(response=>{
                     if(response.status===201){
@@ -118,7 +112,7 @@ let NewRouteForm = (props) => {
             }}>
                 Submit
             </button>
-            <TransitMatrix towns = {[endPoints.A, ...midPoints, endPoints.B]} transitMatrix={transitMatrix} setMatrix={(newMatrix)=>{
+            <TransitMatrix towns = {[endPoints.A, ...midPoints, endPoints.B]} setMatrix={(newMatrix)=>{
                 dispatch({type: act.setMatrix, matrix: newMatrix});
             }}>
 
