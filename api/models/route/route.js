@@ -1,11 +1,11 @@
 'use strict'
 
-exports.addRoute = function (validateTowns, driver, ta) {
-    return async (towns) => {
-        await validateTowns(towns);
-
+exports.addRoute = function (validateTowns, driver, ta, uuid){
+    return async (route) => {
+        await validateTowns(route.transitMatrix);
+        route.uuid = uuid();
         let session = driver.session();
-        let data = await session.writeTransaction(tx => ta.addRouteTransaction(tx, towns));
+        let data = await session.writeTransaction(tx => ta.addRouteTransaction(tx, route));
         session.close();
         return data;
     }

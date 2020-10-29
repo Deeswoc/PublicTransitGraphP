@@ -1,11 +1,4 @@
-exports.addRouteTransaction = function (tx, matrix) {
-
-    // console.log("Route: ", matrix.map((town)=>{return town.uuid}));
-    // console.log("fareMatrix", {pickUp: matrix});
-    // matrix.forEach((item, i) => {
-    //     console.log("DropOff ", i, " ", item.dropOff);
-    // })
-    // console.log("Origin Fare", 120);
+exports.addRouteTransaction = function (tx, route) {
     return tx.run(
         `
         //Create Route With matrix 1.2
@@ -21,7 +14,7 @@ exports.addRouteTransaction = function (tx, matrix) {
         
         // Create Route/Transit Node
         // r => Transit Node
-        MERGE (x)-[:origin{fare:0}]->(r:transit{Name:x.Name + " to " + y.Name})-[:origin{fare:$originFare}]->(y) with x, r, y, towns
+        MERGE (x)-[:origin{fare:0}]->(r:transit{Name:${ typeof route.name !== 'undefined' ?`$name` : `x.Name + " to " + y.Name`}, uuid:$uuid} )-[:origin{fare:$originFare}]->(y) with x, r, y, towns
         MERGE (x)<-[:origin{fare:$originFare}]-(r)<-[:origin{fare:0}]-(y) with x, y, r, towns
         
         // Adds the via relationship between the Transit Node and the towns on its route between the endpoints
@@ -52,12 +45,14 @@ exports.addRouteTransaction = function (tx, matrix) {
         UNWIND index as i
             MATCH (n) where n.uuid = towns[i] with n, towns, i 
             MATCH (m) where m.uuid = towns[i+1] with n, m
-            MERGE (n)-[:Route]->(m) with n, m
-            MERGE (n)<-[:Route]-(m)`,
+            MERGE (n)-[:Route{uuid:$uuid}]->(m) with n, m
+            MERGE (n)<-[:Route{uuid:$uuid}  ]-(m)`,
         {
-            route: matrix.map((town)=>{return town.uuid}),
-            fareMatrix: {pickUp: matrix},
-            originFare: 120
+            route: route.transitMatrix.pickup.map((town)=>{return town.uuid}),
+            fareMatrix: {pickUp: route.transitMatrix.pickup},
+            originFare: route.originFare,
+            uuid: route.uuid,
+            name: typeof route.name !== 'undefined'? route.name : null
         }
     )
 }

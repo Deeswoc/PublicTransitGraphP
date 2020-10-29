@@ -74,12 +74,6 @@ let NewRouteForm = (props) => {
                         fare: parseInt(e.target.value)
                     })
                 }}></input>
-                <label htmlFor="via">Via</label>$ <input name="children" type="number" min="0" step="5" value={fare.via} onChange={(e) => {
-                    dispatch({
-                        type: act.setViaFare,
-                        fare: parseInt(e.target.value)
-                    })
-                }}></input>
             </fieldset>
             <fieldset>
                 <legend>Route</legend>
@@ -95,13 +89,16 @@ let NewRouteForm = (props) => {
                 }}></input>
             </fieldset>
             <button type='submit' onClick={(e)=>{
-                e.preventDefault();                
+                e.preventDefault();          
+                let route = {};
+                route.transitMatrix = matrix;     
+                route.originFare = fare.origin;  
                 fetch(`${d}/routes`, {
                     method:'POST',
                     headers:{
                         'Content-type':'application/json'
                     },
-                    body:JSON.stringify(matrix)
+                    body: JSON.stringify({route})
                 })
                 .then(response=>{
                     if(response.status===201){

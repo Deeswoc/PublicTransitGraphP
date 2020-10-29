@@ -1,11 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../../Styles/Forms/baseStyle.css'
-import ExpandableList from '../../Components/ExpandableList'
-import { NewRouteFormContext } from '../../Contexts/NewRouteFormContext'
-import { actions as act } from '../../Contexts/NewRouteFormContextReducers/NewRouteFormContextReducer'
 import Select from 'react-select';
 import d from '../../devURL';
-import { forEach } from 'lodash'
 
 function GetTransit(props){
     const [townA, setTownA] = useState("");
