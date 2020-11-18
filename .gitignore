@@ -5,3 +5,4 @@ react-app/*
 config/
 .env
 coverage/
+.nyc_output/
