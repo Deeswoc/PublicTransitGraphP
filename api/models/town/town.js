@@ -43,6 +43,7 @@ exports.getTowns = function(driver, ta){
 exports.addTowns = function(driver, ta, createID){
     return async function (towns){
         let session;
+        let newTowns = [];
         try {
             session = driver.session();
             towns = towns.map(town => {
@@ -51,8 +52,11 @@ exports.addTowns = function(driver, ta, createID){
                     uuid: createID()
                 } 
             })
-            const data = await session.writeTransaction(tx => ta.addTownsTransaction(tx, towns));
-            console.log(data);
+            const data = await session.writeTransaction(tx => ta.addTownsTransaction(tx, towns));            
+            data.records.forEach((record)=>{
+                newTowns.push(record.get('n').properties);
+            });
+            return newTowns;
         } catch (error) {
             console.log(error.message);
         }finally{

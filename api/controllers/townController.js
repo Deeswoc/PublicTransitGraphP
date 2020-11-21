@@ -3,12 +3,8 @@ const
     townModel = require('../models/town');
 exports.add_new_towns = async(req, res, next) =>{
     try {
-        await townModel.addTowns(req.body.towns);
-        res.status(201).send({
-            success:true,
-            message: 'Towns added successfully',
-            error:null
-        })
+        let newTowns = await townModel.addTowns(req.body.towns);
+        res.status(201).json(newTowns);
     } catch (error) {
         res.status(500).send({
             success: false,

@@ -10,14 +10,16 @@ return n`,
 exports.addTownsTransaction = function (tx, towns){
     return tx.run(
         `
+
+CREATE (temp) with temp
 UNWIND $towns as town
-MERGE (a:area:Town {Name: town.name, uuid: town.uuid}) with a, town
-MATCH (p:parish{Name: town.parish}) with a, p, town
-MERGE (a)-[:in]-(p) with a, town
-UNWIND town.categories as category
-MATCH (c:LocationCategory {uuid: category}) 
-MERGE (a)-[:category]-(c)
-RETURN (a)
+MERGE (a:area:Town {Name: town.name, uuid: town.uuid}) with a, town, temp
+MATCH (p:parish{Name: town.parish}) with a, p, town, temp
+MERGE (a)-[:in]-(p) with a, town, temp
+OPTIONAL MATCH (c:LocationCategory {uuid: town.category}) where c.uuid in town.categories and not exists((a)-[:category]-(c)) with a, coalesce(c, temp) as c2, temp
+CREATE (a)-[r:category]->(c2)  with temp, a
+DETACH DELETE temp
+return a as n
 `, {towns}
     )
 }
@@ -29,6 +31,8 @@ exports.getRoutesFromTown = function (tx, town){
         {name: town}
     )
 }
+
+exports.deleteTown
 
 exports.getPassingRoutes = function (tx, town){
     return tx.run(

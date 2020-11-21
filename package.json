@@ -13,7 +13,7 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "test": "nyc mocha --timeout 10000 \"./api/test\"",
+    "test": "nyc mocha --timeout 10000 \"./api/test\" -recursive --exit",
     "start": "node ./bin/www",
     "dev": "concurrently \"nodemon --inspect ../api/bin/www\" \" cd transit-app && SET PORT=3001 && yarn start\"",
     "build": "cd transit-app && yarn build && cd .. && xcopy /e/h/y/q \"transit-app/build\" \"react-app\\\" > nul 2>&1 && del \"react-app\\app.html\" > nul 2>&1 && ren \"react-app\\index.html\" \"app.html\"",

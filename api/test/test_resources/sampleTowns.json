@@ -1,0 +1,32 @@
+{
+    "towns": [
+        {
+            "name":"Brown's Town",
+            "parish":"St. Ann"
+        },
+        {
+            "name":"Priory",
+            "parish":"St. Ann"
+        },
+        {
+            "name":"Lime Hall",
+            "parish":"St. Ann"
+        },
+        {
+            "name":"Higgin Town",
+            "parish":"St. Ann"
+        },
+        {
+            "name":"Claremont",
+            "parish":"St. Ann"
+        },
+        {
+            "name":"St. Ann's Bay",
+            "parish":"St. Ann"
+        },
+        {
+            "name":"Parry Town",
+            "parish":"St. Ann"
+        }
+    ]
+}
