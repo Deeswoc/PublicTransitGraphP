@@ -32,8 +32,8 @@ exports.get_category = async (req, res, next)=>{
 exports.add_category = async(req, res, next) => {
     try{
         let category = req.body;
-        await categoryModel.addRouteCategory(category);
-        res.send(201);
+        let newCategory = await categoryModel.addRouteCategory(category);
+        res.status(201).json(newCategory);
     }catch (error) {
         res.status(500).send({
             success: false,

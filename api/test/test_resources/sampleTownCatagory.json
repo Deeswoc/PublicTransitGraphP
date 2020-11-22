@@ -1,0 +1,16 @@
+{
+    "categories":[
+        {
+            "name":"tourist area",
+            "description":"Abundance of resorts. Usually close to the beach and frequented by turists"
+        },
+        {
+            "name":"residential",
+            "description":"A community where people reside. Few businesses and small if any"
+        },
+        {
+            "name":"shipping",
+            "description":"Close to a port. Businesses are primarily based around logistics"
+        }
+    ]
+}

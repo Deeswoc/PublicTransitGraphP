@@ -24,6 +24,11 @@ exports.addTownCategories = async function (categories){
     categories = categories.map((category)=>{ 
         return {...category, id: uuid()}
     })
+    let newCatagories = [];
     const data = await session.writeTransaction(tx => ta.createTownCategoriesTransaction(tx, categories));
+    data.records.forEach(record => {
+        newCatagories.push(record.get('c').properties);
+    })
     session.close();
+    return newCatagories
 }

@@ -33,7 +33,11 @@ exports.addRouteCategory = function (driver, ta, uuid){
         let session = driver.session();
         category.uuid = uuid();
         try {
+            let newCategories = [];
             let data = await session.writeTransaction(tx => ta.addRouteCategory(tx, category));
+            data.records.forEach(element => {
+                newCategories.push(element.get('category').properties)
+            })
         } catch (error) {
             console.log(error.message);
         }finally{

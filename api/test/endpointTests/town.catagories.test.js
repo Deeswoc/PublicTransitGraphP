@@ -15,13 +15,13 @@ let resetDB = async function () {
     await session.writeTransaction( tx => 
         tx.run(
 `
-        MATCH (n:Town)
+        MATCH (n:LocationCategory)
         DETACH DELETE n
 `)
     )
 }
 
-describe('/towns',()=>{
+describe('/towns/categories',()=>{
     before((done)=>{
         console.log("Running test setup")
         resetDB();
@@ -35,9 +35,9 @@ describe('/towns',()=>{
     })
 
     describe('GET', ()=>{
-        it('should return an empty list of towns', (done)=>{
+        it('should return an empty list of catagories', (done)=>{
             chai.request(server)
-                .get('/towns')
+                .get('/towns/categories')
                 .end((err, res)=>{
                     should.not.exist(err);
                     should.exist(res);
@@ -50,32 +50,32 @@ describe('/towns',()=>{
     })
 
     describe('POST', ()=>{
-        let towns = require('../test_resources/sampleTowns.json');
+        let body = require('../test_resources/sampleTownCatagory.json');
         it('should return a list of town ids', (done)=>{
             chai.request(server)
-                .post('/towns')
+                .post('/towns/categories')
                 .set('content-type', 'application/json')
-                .send(towns)
+                .send(body)
                 .end((err, res)=>{
                     should.not.exist(err);
                     should.exist(res);
                     res.should.have.status(201);
                     res.body.should.be.an('array')
-                        .and.have.lengthOf(towns.towns.length);
+                        .and.have.lengthOf(body.categories.length);
                     res.body[0].should.have.deep.property('uuid').and.be.a('string');
                     done();
                 })
         })
 
-        it('should return the new towns in a get request', (done)=>{
+        it('should return the new catagories in a get request', (done)=>{
             chai.request(server)
-            .get('/towns')
+            .get('/towns/categories')
             .end((err, res)=>{
                 should.not.exist(err);
                 should.exist(res);
                 res.should.have.status(200);
                 res.body.should.be.an('array')
-                    .and.have.lengthOf(7);
+                    .and.have.lengthOf(3);
                 done();
             })
         })

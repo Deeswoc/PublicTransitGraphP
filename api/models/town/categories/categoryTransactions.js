@@ -10,7 +10,8 @@ exports.createTownCategoriesTransaction = function (tx, categories){
     return tx.run(
         `
         UNWIND $categories as category
-            CREATE (:LocationCategory{Name:category.name, description: category.description, uuid: category.id })
+            CREATE (c:LocationCategory{Name:category.name, description: category.description, uuid: category.id })
+        RETURN c;
         `, {categories}
     )
 }
