@@ -1,15 +1,15 @@
-exports.getTownTransaction = function (tx, townID){
-    return tx.run(
-        `
+function getTownTransaction(tx, townID) {
+  return tx.run(
+    `
 Match (n{uuid:$id})
 return n`,
-        {id: townID}
-    )
+    { id: townID },
+  );
 }
 
-exports.addTownsTransaction = function (tx, towns){
-    return tx.run(
-        `
+function addTownsTransaction(tx, towns) {
+  return tx.run(
+    `
 
 CREATE (temp) with temp
 UNWIND $towns as town
@@ -20,42 +20,47 @@ OPTIONAL MATCH (c:LocationCategory {uuid: town.category}) where c.uuid in town.c
 CREATE (a)-[r:category]->(c2)  with temp, a
 DETACH DELETE temp
 return a as n
-`, {towns}
-    )
+`, { towns },
+  );
 }
 
-exports.getRoutesFromTown = function (tx, town){
-    return tx.run(
-        'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:toFrom]->(town:Town) ' +
-        'return town.Name',
-        {name: town}
-    )
+function getRoutesFromTown(tx, town) {
+  return tx.run(
+    'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:toFrom]->(town:Town) '
+        + 'return town.Name',
+    { name: town },
+  );
 }
 
-exports.deleteTown
-
-exports.getPassingRoutes = function (tx, town){
-    return tx.run(
-        'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:passesThrough]->(town:Town) ' +
-        'return town',
-        {name: town}
-    )
+function getPassingRoutes(tx, town) {
+  return tx.run(
+    'MATCH (:Town {Name:$name})<-[:toFrom]-()-[:passesThrough]->(town:Town) '
+        + 'return town',
+    { name: town },
+  );
 }
-    
-exports.getTownCategoriesTransaction = function (tx){
-    return tx.run(
-        `MATCH (category:LocationCategory)
+
+function getTownCategoriesTransaction(tx) {
+  return tx.run(
+    `MATCH (category:LocationCategory)
         return category
         ORDER BY category.Name
-        `
-    )
+        `,
+  );
 }
 
-exports.getTownsTransaction = function (tx){
-    return tx.run(
-        'MATCH (area)-[:in]->(n:parish) ' +
-        'RETURN area, n.Name as parish' 
-    )
+function getTownsTransaction(tx) {
+  return tx.run(
+    'MATCH (area)-[:in]->(n:parish) '
+        + 'RETURN area, n.Name as parish',
+  );
 }
 
-
+module.exports = {
+  getTownTransaction,
+  getTownsTransaction,
+  getTownCategoriesTransaction,
+  getPassingRoutes,
+  getRoutesFromTown,
+  addTownsTransaction,
+};

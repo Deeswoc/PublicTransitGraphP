@@ -12,8 +12,8 @@ async function resetDB() {
 
   await session.writeTransaction((tx) => tx.run(
     `
-        MATCH (n:Town)
-        DETACH DELETE n
+      MATCH (n:Town)
+      DETACH DELETE n
 `,
   ));
 }

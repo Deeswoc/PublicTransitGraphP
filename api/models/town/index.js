@@ -1,15 +1,7 @@
-const
-    driver = require('../../config/database'),
-    ta = require('./townTransactions'), 
-    uuid = require('uuid').v4,
-    {
-        getTown: getGetTown,
-        getTowns: getGetTowns,
-        addTowns: getAddTowns
-    } = require('./town');
+const uuid = require('uuid').v4;
+const driver = require('../../config/database');
+const ta = require('./townTransactions');
 
+const town = require('./town')({ driver, uuid, ta });
 
-
-exports.getTown = getGetTown(driver, ta);
-exports.getTowns = getGetTowns(driver, ta);
-exports.addTowns = getAddTowns(driver, ta, uuid);
+module.exports = town;

@@ -1,73 +1,78 @@
-'use strict'
+let driver;
+let ta;
+let uuid;
+let validateTowns;
+let NotFound;
 
-exports.addRoute = function (validateTowns, driver, ta, uuid){
-    return async (route) => {
-        await validateTowns(route.transitMatrix.map(town => {
-            return town.uuid;
-        }));
-        route.uuid = uuid();
-        let session = driver.session();
-        let data = await session.writeTransaction(tx => ta.addRouteTransaction(tx, route));
-        session.close();
-        return data;
-    }
+// class NotFound extends Error {
+//   constructor(errorMessage) {
+//     super();
+//     this.message = errorMessage;
+//     this.missing = [];
+//   }
+// }
+
+// async function validateTowns(matrix) {
+//   const error = new NotFound(message);
+//   for (let i = 0; i < matrix.length; i += 1) {
+//     const town = await getTown(matrix[i]);
+//     if (town === null) error.missing.push(matrix[i]);
+//   }
+//   if (error.missing.length > 0) {
+//     throw error;
+//   }
+//   return true;
+// }
+
+async function addRoute(route) {
+  await validateTowns(route.transitMatrix.map((town) => town.uuid));
+  const IDedRoute = {
+    ...route,
+    uuid: uuid(),
+  };
+  const session = driver.session();
+  const data = await session.writeTransaction((tx) => ta.addRouteTransaction(tx, IDedRoute));
+  session.close();
+  return data;
 }
 
-exports.getRoutes = function (driver, ta) {
-    return async () => {
-        let session = driver.session();
-        let routes = [];
-        let data = await session.readTransaction(tx => ta.getRoutesTransaction(tx));
-        let records = data.records;
-        records.forEach((route) => {
-            routes.push({
-                name: route.get(0),
-                origins: route.get(1)
-            })
-        })
-        session.close();
-        return routes;
-    }
+async function getRoutes() {
+  const session = driver.session();
+  const routes = [];
+  const data = await session.readTransaction((tx) => ta.getRoutesTransaction(tx));
+  const { records } = data;
+  records.forEach((route) => {
+    routes.push({
+      name: route.get(0),
+      origins: route.get(1),
+    });
+  });
+  session.close();
+  return routes;
 }
 
-exports.getShortestPath = function (validateTowns, driver, ta) {
+async function getShortestPath(townA, townB) {
+  const towns = [];
+  towns.push(townA, townB);
+  await validateTowns(towns);
 
-    return async (townA, townB) => {
-        let towns = [];
-        towns.push(townA, townB)
-        await validateTowns(towns);
-
-        let session = driver.session();
-        let data = await session.readTransaction(tx => ta.getShortestPathTransaction(tx, townA, townB));
-        session.close();
-        return data;
-    }
-
+  const session = driver.session();
+  const data = await session
+    .readTransaction((tx) => ta.getShortestPathTransaction(tx, townA, townB));
+  session.close();
+  return data;
 }
 
-exports.validateTowns = function (getTown, NotFound, errorMessage) {
-    return async (matrix) => {
-        let error = new NotFound(errorMessage);
-        for (let i = 0; i < matrix.length; i++) {
-            let town = await getTown(matrix[i]);
-            if (town === null)
-                error.missing.push(matrix[i]);
-        }
-        if (error.missing.length > 0) {
-            throw error;
-        }
-        return true;
-    }
-}
-
-
-
-class NotFound extends Error {
-    constructor(errorMessage) {
-        super();
-        this.message = errorMessage;
-        this.missing = [];
-    }
-}
-
-exports.NotFound = NotFound;
+module.exports = (dependencies) => {
+  driver = dependencies.driver;
+  ta = dependencies.ta;
+  uuid = dependencies.uuid;
+  validateTowns = dependencies.validateTowns;
+  return {
+    NotFound,
+    validateTowns,
+    getShortestPath,
+    getRoutes,
+    addRoute,
+  };
+};

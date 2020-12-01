@@ -1,47 +1,36 @@
-const categoryModel = require('../models/town/categories/catagory');
+let categoryModel;
 
-exports.test = (req, res, next) => {
-    res.send("hello world");
+async function getCategories(req, res) {
+  try {
+    const data = await categoryModel.getTownCategories();
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    });
+  }
 }
 
-exports.get_categories = async(req, res, next) =>{
-    try {
-        let data = await categoryModel.getTownCategories();
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(500).send({
-            success: false,
-            message: error.message,
-            error
-        });
-    }
+async function addCategories(req, res) {
+  try {
+    const { categories } = req.body;
+    const newCategories = await categoryModel.addTownCategories(categories);
+    res.status(201).send(newCategories);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    });
+  }
 }
 
-
-exports.get_category = async(req, res, next) =>{
-    try {
-        let data = await categoryModel.getTownCategory(req.params.id);
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(500).send({
-            success: false,
-            message: error.message,
-            error
-        });
-    }
-}
-
-
-exports.add_categories = async(req, res, next) => {
-    try{
-        let categories = req.body.categories;
-        let newCategories = await categoryModel.addTownCategories(categories);
-        res.status(201).send(newCategories);
-    }catch (error) {
-        res.status(500).send({
-            success: false,
-            message: error.message,
-            error
-        });
-    }
-}
+module.exports = (dependencies) => {
+  categoryModel = dependencies.categoryModel;
+  return {
+    getCategories,
+    addCategories,
+  };
+};
