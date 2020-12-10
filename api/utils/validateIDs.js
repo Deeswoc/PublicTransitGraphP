@@ -1,12 +1,15 @@
 let NotFound;
 let errorMessage;
-let getTown;
+let searchID;
 async function validate(IDs) {
   const error = new NotFound(errorMessage);
+  const results = [];
   for (let i = 0; i < IDs.length; i += 1) {
-    const town = await getTown(IDs[i]);
-    if (town === null) error.missing.push(IDs[i]);
+    results.push(searchID(IDs[i]).then((record) => {
+      if (record === null) error.missing.push(IDs[i]);
+    }));
   }
+  await Promise.all(error.missing);
   if (error.missing.length > 0) {
     throw error;
   }
@@ -16,7 +19,7 @@ async function validate(IDs) {
 module.exports = (dependencies) => {
   NotFound = dependencies.NotFound;
   errorMessage = dependencies.errorMessage;
-  getTown = dependencies.getTown;
+  searchID = dependencies.searchID;
   return {
     validate,
   };

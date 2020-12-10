@@ -5,7 +5,7 @@ const
 
   townModel = require('../models/town/town')({ uuid, driver, ta: townTransactions });
 
-exports.add_new_towns = async (req, res, next) => {
+exports.add_new_towns = async (req, res) => {
   try {
     const newTowns = await townModel.addTowns(req.body.towns);
     res.status(201).json(newTowns);
@@ -18,13 +18,13 @@ exports.add_new_towns = async (req, res, next) => {
   }
 };
 
-exports.get_out_bound_routes = async (req, res, next) => {
+exports.get_out_bound_routes = async (req, res) => {
   res.done();
 };
 
-exports.get_town = async (req, res, next) => {
+exports.get_town = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id, 10);
     const town = await townModel.getTown(id);
     res.status(200).json(town);
   } catch (error) {
@@ -36,7 +36,7 @@ exports.get_town = async (req, res, next) => {
   }
 };
 
-exports.get_towns = async (req, res, next) => {
+exports.get_towns = async (req, res) => {
   try {
     const towns = await townModel.getTowns();
     res.status(200).json(towns);

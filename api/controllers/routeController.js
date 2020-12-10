@@ -1,7 +1,7 @@
 const routeModel = require('../models/route');
 const { NotFound } = require('../models/route/route');
 
-exports.add_new_route = async function (req, res, next) {
+async function addRoute(req, res) {
   try {
     await routeModel.addRoute(req.body.route);
     res.sendStatus(201);
@@ -20,11 +20,11 @@ exports.add_new_route = async function (req, res, next) {
       });
     }
   }
-};
+}
 
-exports.get_routes = async function (req, res, next) {
+async function getRoutes(req, res) {
   try {
-    routes = await routeModel.getRoutes();
+    const routes = await routeModel.getRoutes();
     res.status(200).json(routes);
   } catch (error) {
     console.error(error);
@@ -32,4 +32,9 @@ exports.get_routes = async function (req, res, next) {
       error: error.message,
     });
   }
+}
+
+module.exports = {
+  addRoute,
+  getRoutes,
 };
