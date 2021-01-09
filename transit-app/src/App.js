@@ -8,11 +8,14 @@ import NewTownFormContextProvider from './Contexts/NewTownFormContext';
 import RouteForm from './Routes/AddRoute/NewRouteForm'
 import NewRouteFormContextProvider from './Contexts/NewRouteFormContext';
 import GetTransit from './Routes/GetTransit/GetTransit';
+import Login from './Routes/Login/login'
+
 function App() {
   return (  
     <Router>
       <div>
         <aside>
+          <Link to={`/Login`}>Login</Link>
           <Link to={`/Towns`}>Towns</Link>
           <Link to={`/Add-Town`}>Add Towns</Link>
           <Link to={`/Add-Route`}>Add Route</Link>
@@ -32,6 +35,7 @@ function App() {
             </NewRouteFormContextProvider>
           </Route>
           <Route path="/Find-Path" component = {GetTransit} />
+          <Route path="/Login" component = {Login} />
         </main>
       </div>
     </Router>

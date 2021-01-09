@@ -1,8 +1,10 @@
-'use-strict'
-let express = require('express');
-let router = express.Router();
-let categoriesRouter = require('./towns/categories');
-let townController = require('../controllers/townController');
+'use-strict';
+
+const express = require('express');
+const categoriesRouter = require('./towns/categories');
+const townController = require('../controllers/townController');
+
+const router = express.Router();
 
 router.use('/categories', categoriesRouter);
 router.post('/', townController.add_new_towns);
