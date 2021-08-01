@@ -34,10 +34,17 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/home', passport.authenticate('google'), (req, res) => {
-  res.send(req.user);
-});
-app.use('/towns', townRouter);
+app.get(
+  '/home',
+  passport.authenticate('google', (err, user, next) => {
+    if (err) console.log('Not loged in');
+    if (user) console.log('Loged in user: ', user);
+  }),
+  (req, res) => {
+    res.send(req.user);
+  },
+);
+app.use('/towns',  townRouter);
 app.use('/routes', routeRouter);
 app.use('/app', appRouter);
 app.use('/authenticate', authenticateRouter);
