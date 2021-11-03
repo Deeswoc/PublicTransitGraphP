@@ -20,7 +20,6 @@ module.exports = (dependencies) => {
   NotFound = dependencies.NotFound;
   errorMessage = dependencies.errorMessage;
   searchID = dependencies.searchID;
-  return {
-    validate,
-  };
+  return validate;
+
 };

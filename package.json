@@ -50,13 +50,14 @@
     "graphql": "^15.0.0",
     "http": "0.0.1-security",
     "http-errors": "~1.6.3",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "morgan": "~1.9.1",
     "mysql2": "2.1.0",
     "neo4j-driver": "^4.0.2",
+    "node-sass": "^4.0.1",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",
-    "pug": "^2.0.4",
+    "pug": "^3.0.2",
     "uuid": "^8.3.0"
   }
 }

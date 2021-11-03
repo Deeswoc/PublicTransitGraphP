@@ -60,10 +60,77 @@ function addRouteTransaction(tx, route) {
 function getRoutesTransaction(tx) {
   return tx.run(
     `
-match (r:transit) with r
-match (e)<-[:origin]-(r)
-return r.Name as \`Route\`, COLLECT({Name: e.Name, id: e.uuid}) as \`Route Origins\`
-            `,
+    // Get Routes 2.2.1
+// Return rotue data complete script
+// Fixed issue where path wasn't returning correctly
+ 
+MATCH (route:transit) WITH route
+MATCH (route)-[:origin]->(endpoint) WITH route, collect({uuid:endpoint.uuid}) as endIDS
+MATCH path = (town1:Town{uuid:endIDS[0].uuid})-[*]-> (town2:Town{uuid:endIDS[1].uuid}) WHERE none(r in relationships(path) WHERE r.uuid <>  route.uuid) WITH path, route, endIDS
+MATCH (route)-[]-(sub_route:via) WITH route, sub_route, endIDS, path
+MATCH (sub_route)-[relOn:getOn]-(entry:Town) WITH route, sub_route, entry, endIDS, path
+MATCH (sub_route)-[relOff:getOff]-(exit:Town) WITH route, sub_route, entry, exit, relOff, endIDS, path
+
+WITH route, entry, sub_route,  collect({exitPoint: exit.Name, id:exit.uuid, fare: relOff.fare}) as exits, endIDS, path
+WITH route, collect(sub_route) as subRoutes, endIDS, path,
+{ matrix: 
+    collect({
+        uuid: entry.uuid, 
+        name: entry.Name, 
+        exit: exits
+    })
+} as travelMatrix
+
+CALL {
+    WITH path
+    UNWIND nodes(path) as pathNodes
+    RETURN collect(pathNodes.Name) as pathList
+}
+
+RETURN route{.*, endPoints: [pathList[0], last(pathList)], pathList} as \`Route\`, size(pathList) as pathSize, travelMatrix as \`Travel Matrix\`
+`
+  )
+}
+
+function getRouteTransaction(tx, route_id) {
+  return tx.run(
+    `
+    // Get Route 2.2.1
+    // Return rotue data complete script
+    // Fixed issue where path wasn't returning correctly
+     
+    MATCH (route:transit{uuid:$route_id}) WITH route
+    MATCH (route)-[:origin]->(endpoint) WITH route, collect({uuid:endpoint.uuid}) as endIDS
+    MATCH path = (town1:Town{uuid:endIDS[0].uuid})-[*]-> (town2:Town{uuid:endIDS[1].uuid}) WHERE none(r in relationships(path) WHERE r.uuid <>  $route_id) WITH path, route, endIDS
+    MATCH (route)-[]-(sub_route:via) WITH route, sub_route, endIDS, path
+    MATCH (sub_route)-[relOn:getOn]-(entry:Town) WITH route, sub_route, entry, endIDS, path
+    MATCH (sub_route)-[relOff:getOff]-(exit:Town) WITH route, sub_route, entry, exit, relOff, endIDS, path
+    
+    WITH route, entry, sub_route,  collect({exitPoint: exit.Name, id:exit.uuid, fare: relOff.fare}) as exits, endIDS, path
+    WITH route, collect(sub_route) as subRoutes, endIDS, path,
+    { matrix: 
+        collect({
+            uuid: entry.uuid, 
+            name: entry.Name, 
+            exit: exits
+        })
+    } as travelMatrix
+    
+    CALL {
+        WITH path
+        UNWIND nodes(path) as pathNodes
+        RETURN collect({Name: pathNodes.Name, uuid: pathNodes.uuid}) as pathList
+    }
+    
+    RETURN route{
+        .*, 
+        endPoints: [pathList[0], 
+        last(pathList)], 
+        pathList
+      } as \`Route\`, 
+      size(pathList) as \`Path Size\`, 
+      travelMatrix as \`Travel Matrix\`
+            `, { route_id }
   );
 }
 
@@ -99,6 +166,7 @@ END as \`Step\`, cost`, { townA, townB },
 
 module.exports = {
   getShortestPathTransaction,
+  getRouteTransaction,
   getRoutesTransaction,
   addRouteTransaction,
 };

@@ -3,7 +3,7 @@ import PropT from 'prop-types';
 
 export default function TownTable(props) {
     return (
-        <table className="table table-dark table-striped">
+        <table className="table table-dark table-striped mt-4">
             <thead className="thead-light">
                 <tr>
                     <th>Name</th>

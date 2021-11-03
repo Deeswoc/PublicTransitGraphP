@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import d from '../devURL';
 import TownTable from './TownTable';
-
+import {getTowns} from '../api stuff/utils'
 
 class FetchedTowns extends Component{
     constructor(props) {
@@ -12,9 +11,7 @@ class FetchedTowns extends Component{
     }
 
     async componentDidMount() {
-        const res = await fetch(`${d}/towns`);
-        console.log(res);
-        const towns = await res.json();
+        const towns = await getTowns();
         this.setState({
             towns
         });

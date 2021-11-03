@@ -5,7 +5,7 @@ let validateTowns;
 let NotFound;
 
 async function addRoute(route) {
-  await validateTowns(route.transitMatrix.map((town) => town.uuid));
+  await  validateTowns(route.transitMatrix.pickup.map((town) => town.uuid));
   const IDedRoute = {
     ...route,
     uuid: uuid(),
@@ -16,15 +16,28 @@ async function addRoute(route) {
   return data;
 }
 
+async function getRoute(id) {
+  const session = driver.session();
+  const {records} = await session.readTransaction((tx) => ta.getRouteTransaction(tx, id));
+  if(records.length === 0) 
+    return null;
+  const route = {
+    ...records[0].get('Route'),
+    transitMatrix: records[0].get('Travel Matrix'),
+  }
+  session.close();
+  return route
+}
+
 async function getRoutes() {
   const session = driver.session();
   const routes = [];
   const data = await session.readTransaction((tx) => ta.getRoutesTransaction(tx));
   const { records } = data;
   records.forEach((route) => {
-    routes.push({
-      name: route.get(0),
-      origins: route.get(1),
+     routes.push({
+      ...route.get('Route'),
+      transitMatrix: route.get('Travel Matrix'),
     });
   });
   session.close();
@@ -52,6 +65,7 @@ module.exports = (dependencies) => {
     NotFound,
     validateTowns,
     getShortestPath,
+    getRoute,
     getRoutes,
     addRoute,
   };

@@ -1,218 +1,313 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Public Transit Graph",
-      "version": "1.0",
-      "description": "API for public transit in Jamaica",
-      "contact": {
-        "name": "Daniel Nelson",
-        "url": "https://www.github.com/deeswoc",
-        "email": "daniellornelson@gmail.com"
-      }
-    },
-    "servers": [
-      {
-        "url": "http://localhost:3000"
-      }
-    ],
-    "paths": {
-      "/towns": {
-        "get": {
-          "summary": "Get list of towns",
-          "tags": [
-            "list"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Town"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "operationId": "get-towns",
-          "description": "Returns a list of towns in the database"
-        },
-        "post": {
-          "summary": "Create list of towns",
-          "operationId": "post-towns",
-          "responses": {
-            "201": {
-              "description": "Created",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/UUID"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "description": "Add a list of towns and return a list of the new ids of the towns in the database",
-          "requestBody": {
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Public Transit Graph",
+    "version": "1.0",
+    "description": "API for public transit in Jamaica",
+    "contact": {
+      "name": "Daniel Nelson",
+      "url": "https://www.github.com/deeswoc",
+      "email": "daniel.lor.nelson@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/towns": {
+      "get": {
+        "summary": "Get list of towns",
+        "tags": [
+          "list"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "parish": {
-                        "type": "string"
-                      }
+                    "$ref": "#/components/schemas/Town"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-towns",
+        "description": "Returns a list of towns in the database"
+      },
+      "post": {
+        "summary": "Create list of towns",
+        "operationId": "post-towns",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UUID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Add a list of towns and return a list of the new ids of the towns in the database",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "parish": {
+                      "type": "string"
                     }
                   }
                 }
               }
             }
-          },
-          "tags": [
-            "create",
-            "list",
-            "towns"
-          ]
-        }
-      },
-      "/towns/{id}": {
-        "get": {
-          "summary": "Get a town by its ID",
-          "tags": [],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Town"
-                  }
-                }
-              }
-            }
-          },
-          "operationId": "get-town-id",
-          "description": "Returns a town matching with the id match the one provided in the param"
-        },
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "UUID of the town to update"
           }
-        ],
-        "put": {
-          "summary": "",
-          "operationId": "put-towns-id",
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Town"
-                  }
-                }
-              }
-            }
-          },
-          "description": "Update town with request body data by using its id",
-          "parameters": [],
-          "requestBody": {
+        },
+        "tags": [
+          "create",
+          "list",
+          "towns"
+        ]
+      }
+    },
+    "/towns/{id}": {
+      "get": {
+        "summary": "Get a town by its ID",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Town"
                 }
               }
-            },
-            "description": "Town Object"
+            }
           }
         },
-        "delete": {
-          "summary": "",
-          "operationId": "delete-towns-id",
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Town"
+        "operationId": "get-town-id",
+        "description": "Returns a town matching with the id match the one provided in the param"
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "UUID of the town to update"
+        }
+      ],
+      "put": {
+        "summary": "",
+        "operationId": "put-towns-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Town"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update town with request body data by using its id",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Town"
+              }
+            }
+          },
+          "description": "Town Object"
+        }
+      },
+      "delete": {
+        "summary": "",
+        "operationId": "delete-towns-id",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Town"
+                }
+              }
+            }
+          }
+        },
+        "description": ""
+      }
+    },
+    "/towns/categories": {
+      "get": {
+        "summary": "Get list of locationCategories",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UUID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-towns-categories",
+        "description": "gets a list of location categories"
+      },
+      "post": {
+        "summary": "Create list of LocationCategories",
+        "operationId": "post-towns-categories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationCategory"
+                }
+              }
+            }
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UUID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "add an array of location categories and returns their ids",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
           "description": ""
-        }
-      },
-      "/towns/categories": {
-        "get": {
-          "summary": "Get list of locationCategories",
-          "tags": [],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/UUID"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "operationId": "get-towns-categories",
-          "description": "gets a list of location categories"
         },
-        "post": {
-          "summary": "Create list of LocationCategories",
-          "operationId": "post-towns-categories",
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/LocationCategory"
-                  }
-                }
-              }
-            },
-            "201": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/UUID"
-                    }
-                  }
+        "tags": [
+          "categories",
+          "towns"
+        ]
+      }
+    },
+    "/towns/categories/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get LocationCategory by its id",
+        "tags": [
+          "categories"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationCategory"
                 }
               }
             }
+          }
+        },
+        "operationId": "get-towns-categories-id",
+        "description": "gets a category by id"
+      },
+      "put": {
+        "summary": "",
+        "operationId": "put-towns-categories-id",
+        "description": "Edit a category by using its uuid",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
           },
-          "description": "add an array of location categories and returns their ids",
-          "requestBody": {
+          "description": ""
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationCategory"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/routes": {
+      "get": {
+        "summary": "Get list of routes",
+        "tags": [
+          "routes"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -220,194 +315,19 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "name": {
-                        "type": "string"
+                      "uuid": {
+                        "$ref": "#/components/schemas/UUID"
                       },
-                      "description": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "description": ""
-          },
-          "tags": [
-            "categories",
-            "towns"
-          ]
-        }
-      },
-      "/towns/categories/{id}": {
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "get": {
-          "summary": "Get LocationCategory by its id",
-          "tags": [
-            "categories"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/LocationCategory"
-                  }
-                }
-              }
-            }
-          },
-          "operationId": "get-towns-categories-id",
-          "description": "gets a category by id"
-        },
-        "put": {
-          "summary": "",
-          "operationId": "put-towns-categories-id",
-          "description": "Edit a category by using its uuid",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            },
-            "description": ""
-          },
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/LocationCategory"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/routes": {
-        "get": {
-          "summary": "Get list of routes",
-          "tags": [
-            "routes"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "uuid": {
-                          "$ref": "#/components/schemas/UUID"
-                        },
-                        "end_to_end_fare": {
-                          "type": "integer",
-                          "minimum": 70,
-                          "maximum": 1000,
-                          "multipleOf": 10
-                        },
-                        "endpoints": {
-                          "type": "array",
-                          "minItems": 2,
-                          "maxItems": 2,
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "uuid": {
-                                "$ref": "#/components/schemas/UUID"
-                              },
-                              "name": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "uuid",
-                              "name"
-                            ]
-                          }
-                        }
+                      "end_to_end_fare": {
+                        "type": "integer",
+                        "minimum": 70,
+                        "maximum": 1000,
+                        "multipleOf": 10
                       },
-                      "required": [
-                        "uuid",
-                        "end_to_end_fare",
-                        "endpoints"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "operationId": "get-routes",
-          "description": "get list of routes in the database"
-        },
-        "post": {
-          "summary": "Create new route",
-          "operationId": "post-routes",
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "fareMatrix": {
-                        "$ref": "#/components/schemas/FareMatrix"
-                      },
-                      "type": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "fareMatrix"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "description": "adds a new route",
-          "tags": [
-            "routes"
-          ]
-        }
-      },
-      "/routes/shortestpath": {
-        "get": {
-          "summary": "Get shortest path",
-          "tags": [
-            "pathing"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "path": {
+                      "endpoints": {
                         "type": "array",
-                        "minItems": 3,
+                        "minItems": 2,
+                        "maxItems": 2,
                         "items": {
                           "type": "object",
                           "properties": {
@@ -416,175 +336,275 @@
                             },
                             "name": {
                               "type": "string"
-                            },
-                            "cost": {
-                              "type": "string"
                             }
-                          }
+                          },
+                          "required": [
+                            "uuid",
+                            "name"
+                          ]
                         }
-                      },
-                      "totalCost": {
-                        "type": "integer",
-                        "minimum": 70,
-                        "maximum": 4000,
-                        "multipleOf": 10
-                      },
-                      "travelTime": {
-                        "type": "integer",
-                        "minimum": 5,
-                        "maximum": 300,
-                        "multipleOf": 1
                       }
-                    }
-                  },
-                  "examples": {
-                    "example-1": {}
+                    },
+                    "required": [
+                      "uuid",
+                      "end_to_end_fare",
+                      "endpoints"
+                    ]
                   }
                 }
               }
             }
-          },
-          "operationId": "get-routes-shortestpath",
-          "description": "Get shortest path weighted on the fare paid",
-          "parameters": [
-            {
-              "schema": {
-                "type": "string"
-              },
-              "in": "query",
-              "name": "pointa",
-              "description": "UUID of an end point of the path",
-              "required": true
-            },
-            {
-              "schema": {
-                "type": "string"
-              },
-              "in": "query",
-              "name": "pointb",
-              "description": "UUID of an end point of the path",
-              "required": true
+          }
+        },
+        "operationId": "get-routes",
+        "description": "get list of routes in the database"
+      },
+      "post": {
+        "summary": "Create new route",
+        "operationId": "post-routes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fareMatrix": {
+                      "$ref": "#/components/schemas/FareMatrix"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "fareMatrix"
+                  ]
+                }
+              }
             }
-          ]
+          }
+        },
+        "description": "adds a new route",
+        "tags": [
+          "routes"
+        ]
+      }
+    },
+    "/routes/shortestpath": {
+      "get": {
+        "summary": "Get shortest path",
+        "tags": [
+          "pathing"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "array",
+                      "minItems": 3,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "uuid": {
+                            "$ref": "#/components/schemas/UUID"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "cost": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "totalCost": {
+                      "type": "integer",
+                      "minimum": 70,
+                      "maximum": 4000,
+                      "multipleOf": 10
+                    },
+                    "travelTime": {
+                      "type": "integer",
+                      "minimum": 5,
+                      "maximum": 300,
+                      "multipleOf": 1
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {}
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-routes-shortestpath",
+        "description": "Get shortest path weighted on the fare paid",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pointa",
+            "description": "UUID of an end point of the path",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "pointb",
+            "description": "UUID of an end point of the path",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Town": {
+        "type": "object",
+        "title": "Town",
+        "description": "Town in the database",
+        "properties": {
+          "uuid": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocationCategory"
+            }
+          }
+        },
+        "required": [
+          "uuid"
+        ]
+      },
+      "UUID": {
+        "type": "string",
+        "title": "UUID",
+        "format": "uuid",
+        "example": "8d6cb779-5c0e-42d4-90ea-cb0d49166d11",
+        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+        "description": "Universally unique id for a resource\n"
+      },
+      "LocationCategory": {
+        "title": "LocationCategory",
+        "type": "object",
+        "description": "Category of the towns or any other type of location stored in the database",
+        "properties": {
+          "uuid": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uuid",
+          "name"
+        ]
+      },
+      "Route": {
+        "title": "Route",
+        "type": "object",
+        "description": "describes transit routes and the mode of transportation",
+        "properties": {
+          "uuid": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "pathList": {
+            "type": "array",
+            "description": "Order of the locations visited one/through the route",
+            "items": {
+              "type": "object",
+              "properties": {
+                "uuid": {
+                  "$ref": "#/components/schemas/UUID"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FareMatrix": {
+        "title": "JourneyMatrix",
+        "type": "object",
+        "properties": {
+          "pickup": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "properties": {
+                "uuid": {
+                  "$ref": "#/components/schemas/UUID"
+                },
+                "dropoff": {
+                  "type": "array",
+                  "minItems": 5,
+                  "maxItems": 5,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "uuid": {
+                        "$ref": "#/components/schemas/UUID"
+                      },
+                      "fare": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-tags": [
+          "routes"
+        ],
+        "description": "Matrix used to record fares paid on a route and other information such as pickup time or journey length",
+        "x-examples": {
+          "example-matrix": {
+            "pickup": [
+              {
+                "uuid": "xxxxxx-xxxx-xxxx-xxx1",
+                "dropoff": [
+                  {
+                    "uuid": "xxxxxx-xxxx-xxxx-xxx1",
+                    "fare": 150
+                  }
+                ]
+              }
+            ]
+          }
         }
       }
     },
-    "components": {
-      "schemas": {
-        "Town": {
-          "type": "object",
-          "title": "Town",
-          "description": "Town in the database",
-          "properties": {
-            "uuid": {
-              "$ref": "#/components/schemas/UUID"
-            },
-            "name": {
-              "type": "string"
-            },
-            "categories": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/LocationCategory"
-              }
-            }
-          },
-          "required": [
-            "uuid"
-          ]
-        },
-        "UUID": {
-          "type": "string",
-          "title": "UUID",
-          "format": "uuid",
-          "example": "8d6cb779-5c0e-42d4-90ea-cb0d49166d11",
-          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-          "description": "Universally unique id for a resource\n"
-        },
-        "LocationCategory": {
-          "title": "LocationCategory",
-          "type": "object",
-          "description": "Category of the towns or any other type of location stored in the database",
-          "properties": {
-            "uuid": {
-              "$ref": "#/components/schemas/UUID"
-            },
-            "name": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "uuid",
-            "name"
-          ]
-        },
-        "Route": {
-          "title": "Route",
-          "type": "object",
-          "description": "describes transit routes and the mode of transportation",
-          "properties": {
-            "uuid": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          }
-        },
-        "FareMatrix": {
-          "title": "FareMatrix",
-          "type": "object",
-          "properties": {
-            "pickup": {
-              "type": "array",
-              "minItems": 5,
-              "maxItems": 5,
-              "items": {
-                "type": "object",
-                "properties": {
-                  "uuid": {
-                    "$ref": "#/components/schemas/UUID"
-                  },
-                  "dropoff": {
-                    "type": "array",
-                    "minItems": 5,
-                    "maxItems": 5,
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "uuid": {
-                          "$ref": "#/components/schemas/UUID"
-                        },
-                        "fare": {
-                          "type": "integer"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "x-tags": [
-            "routes"
-          ],
-          "description": "Matrix used to record fares paid on a route and other information such as pickup time or journey length",
-          "x-examples": {
-            "example-matrix": {
-              "pickup": [
-                {
-                  "uuid": "xxxxxx-xxxx-xxxx-xxx1",
-                  "dropoff": [
-                    {
-                      "uuid": "xxxxxx-xxxx-xxxx-xxx1",
-                      "fare": 150
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        }
+    "securitySchemes": {
+      "API Key - 1": {
+        "type": "oauth2"
       }
     }
   }
+}

@@ -9,6 +9,7 @@ const categoriesRouter = require('./routes/category');
 
 router.post('/', routeController.addRoute);
 router.get('/', routeController.getRoutes);
+router.get('/:id', routeController.getRoute);
 router.use('/shortest-path', shortestPath);
 router.use('/categories', categoriesRouter);
 module.exports = router;
